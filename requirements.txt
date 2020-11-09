@@ -2,3 +2,4 @@ flask
 flask_socketio
 requests
 opencv-python
+numpy

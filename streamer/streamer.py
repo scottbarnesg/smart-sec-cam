@@ -10,7 +10,7 @@ new_image = False
 
 
 class Streamer:
-    def __init__(self, capture_delay=0.01, camera_port=0, compression_ratio=1.0, server_url="http://localhost:5000"):
+    def __init__(self, capture_delay=0.05, camera_port=0, compression_ratio=1.0, server_url="http://localhost:5000"):
         self.cap_delay = capture_delay
         self.cam_port = camera_port
         self.cam = cv2.VideoCapture(int(self.cam_port)) # Machine dependent
@@ -48,7 +48,6 @@ class Streamer:
         while True:
             self.image = self.capture_image()
             time.sleep(self.cap_delay)  # Prevents capture from eating cpu time
-            # print("Got new image")
 
     def encode(self):
         print('Starting encoding')
@@ -57,7 +56,6 @@ class Streamer:
             self.data = (cv2.imencode('.jpeg', self.image)[1]).tostring()
             new_image = True
             time.sleep(self.cap_delay)  # Prevents encoding from eating cpu time
-            # print("Encoded new image")
         print('Exiting encoder thread')
 
     def send_image(self):
@@ -69,6 +67,9 @@ class Streamer:
                 new_image = False
             else:
                 time.sleep(0.01)
+
+    def write(self):
+        cv2.imwrite('image.jpeg', streamer.image)
 
 
 if __name__ == '__main__':
