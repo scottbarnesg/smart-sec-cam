@@ -9,7 +9,9 @@ socket = SocketIO(app)
 @socket.on("new-image")
 def get_image(data):
     print("Got new image")
-    print(data['image'])
+    print(data['hostname'])
+    # socket.emit('image', data, room=data['hostname']) # TODO: Create room from hostname
+    socket.emit('image', data)
 
 
 if __name__ == '__main__':

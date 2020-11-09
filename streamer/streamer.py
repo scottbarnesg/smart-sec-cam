@@ -1,6 +1,7 @@
 import cv2
 import time
 import socketio
+import socket as sock
 from threading import Thread
 
 # Global variables
@@ -22,6 +23,7 @@ class Streamer:
         # Socketio for emitter
         self.server_url = server_url
         self.socket = socketio.Client()
+        self.hostname = sock.gethostname()
 
     def capture_image(self, init=False):
         global error
@@ -63,7 +65,7 @@ class Streamer:
         self.socket.connect(self.server_url)
         while not error:
             if new_image:
-                self.socket.emit("new-image", {'image': self.data})
+                self.socket.emit("new-image", {'hostname': self.hostname, 'image': self.data})
                 new_image = False
             else:
                 time.sleep(0.01)
