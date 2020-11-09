@@ -73,7 +73,12 @@ class Streamer:
 
 
 if __name__ == '__main__':
-    streamer = Streamer()
+    import argparse
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--server_url', help='Server to stream images to', default='http://localhost:5000')
+    args = parser.parse_args()
+    # Setup streamer and start threads
+    streamer = Streamer(server_url=args.server_url)
     captureThread = Thread(target=streamer.run)
     encoderThread = Thread(target=streamer.encode)
     senderThread = Thread(target=streamer.send_image)
