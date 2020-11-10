@@ -3,9 +3,11 @@ from flask_socketio import SocketIO
 import cv2
 import numpy as np
 import io
+import eventlet
 from engineio.payload import Payload
 
 Payload.max_decode_packets = 500
+eventlet.monkey_patch()
 
 app = Flask(__name__)
 socket = SocketIO(app, cors_allowed_origins="*")
@@ -16,8 +18,8 @@ img_data = None
 @socket.on("new-image")
 def get_image(data):
     global img_data
-    print("Got new image")
-    print(data['hostname'])
+    # print("Got new image")
+    # print(data['hostname'])
     # socket.emit('image', data, room=data['hostname']) # TODO: Create room from hostname
     socket.emit('image', {'data': data['image']})
     img_data = data['image']
