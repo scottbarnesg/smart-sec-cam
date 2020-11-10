@@ -1,7 +1,7 @@
 import React from "react";
 import io from "socket.io-client";
 
-const SERVER_URL = "http://127.0.0.1:5000"
+const SERVER_URL = "http://sec-cam-server:5000"
 let socket = io(SERVER_URL)
 
 class ImageViewer extends React.Component {
