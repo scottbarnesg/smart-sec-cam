@@ -3,6 +3,9 @@ from flask_socketio import SocketIO
 import cv2
 import numpy as np
 import io
+from engineio.payload import Payload
+
+Payload.max_decode_packets = 500
 
 app = Flask(__name__)
 socket = SocketIO(app, cors_allowed_origins="*")
