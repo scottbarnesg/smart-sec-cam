@@ -6,11 +6,12 @@ from threading import Thread
 
 # Global variables
 error = False
+new_raw_img = False
 new_image = False
 
 
 class Streamer:
-    def __init__(self, capture_delay=0.05, camera_port=0, compression_ratio=1.0, server_url="http://localhost:5000"):
+    def __init__(self, capture_delay=0.1, camera_port=0, compression_ratio=1.0, server_url="http://localhost:5000"):
         self.cap_delay = capture_delay
         self.cam_port = camera_port
         self.cam = cv2.VideoCapture(int(self.cam_port)) # Machine dependent
@@ -45,17 +46,21 @@ class Streamer:
 
     def run(self):
         print('Starting image capture')
+        global new_raw_img
         while True:
             self.image = self.capture_image()
+            new_raw_img = True
             time.sleep(self.cap_delay)  # Prevents capture from eating cpu time
 
     def encode(self):
         print('Starting encoding')
-        global error, new_image
+        global error, new_image, new_raw_img
         while not error:
-            self.data = (cv2.imencode('.jpeg', self.image)[1]).tostring()
-            new_image = True
-            time.sleep(self.cap_delay)  # Prevents encoding from eating cpu time
+            if new_raw_img:
+                self.data = (cv2.imencode('.jpeg', self.image)[1]).tostring()
+                new_image = True
+                new_raw_img = False
+                time.sleep(0.01)  # Prevents encoding from eating cpu time
         print('Exiting encoder thread')
 
     def send_image(self):
