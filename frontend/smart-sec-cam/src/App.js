@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="App">
       <ImageViewer room={"pi-sec-cam-1"} />
-      <ImageViewer room={"scott-Aspire-E5-575"}/>
+      <ImageViewer room={"pi-sec-cam-2"}/>
     </div>
   );
 }
