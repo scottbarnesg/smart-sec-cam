@@ -4,7 +4,8 @@ import ImageViewer from "./components/ImageViewer";
 function App() {
   return (
     <div className="App">
-      <ImageViewer/>
+      <ImageViewer room={"pi-sec-cam-1"} />
+      <ImageViewer room={"scott-Aspire-E5-575"}/>
     </div>
   );
 }

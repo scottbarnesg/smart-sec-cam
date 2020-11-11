@@ -50,7 +50,7 @@ class Streamer:
         while True:
             self.image = self.capture_image()
             new_raw_img = True
-            print("Got new image")
+            # print("Got new image")
             time.sleep(self.cap_delay)  # Prevents capture from eating cpu time
 
     def encode(self):
@@ -61,7 +61,7 @@ class Streamer:
                 self.data = (cv2.imencode('.jpeg', self.image)[1]).tostring()
                 new_image = True
                 new_raw_img = False
-                print("Encoded new image")
+                # print("Encoded new image")
                 time.sleep(0.05)  # Prevents encoding from eating cpu time
         print('Exiting encoder thread')
 
@@ -72,7 +72,7 @@ class Streamer:
             if new_image:
                 self.socket.emit("new-image", {'hostname': self.hostname, 'image': self.data})
                 new_image = False
-                print("Sent new image")
+                # print("Sent new image")
             else:
                 time.sleep(0.01)
 

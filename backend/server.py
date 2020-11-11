@@ -1,7 +1,6 @@
 from flask import Flask, send_file
-from flask_socketio import SocketIO
-import cv2
-import numpy as np
+from flask_socketio import SocketIO, join_room
+import json
 import io
 import eventlet
 from engineio.payload import Payload
@@ -11,28 +10,30 @@ eventlet.monkey_patch()
 
 app = Flask(__name__)
 socket = SocketIO(app, cors_allowed_origins="*")
-img_data = None
+rooms = []
 
 
 # Sent from cameras, with a new image
 @socket.on("new-image")
 def get_image(data):
-    global img_data
-    # print("Got new image")
-    # print(data['hostname'])
-    # socket.emit('image', data, room=data['hostname']) # TODO: Create room from hostname
-    socket.emit('image', {'data': data['image']})
-    img_data = data['image']
+    # Create room from hostname
+    room = data['hostname']
+    if room not in rooms:
+        rooms.append(room)
+    # Emit to room
+    socket.emit('image', {'room': room, 'data': data['image']}, room=room)
+    # socket.emit('image', {'data': data['image']})
 
 
-@app.route("/image.jpeg", methods=["GET"])
-def get_image():
-    global img_data
-    return send_file(
-        io.BytesIO(img_data),
-        mimetype='image/jpeg',
-        as_attachment=True,
-        attachment_filename='image.jpg')
+@socket.on('join')
+def on_join(data):
+    room = data['room']
+    join_room(room)
+
+
+@app.route("/rooms", methods=["GET"])
+def get_rooms():
+    return json.dumps({'rooms': rooms}), 200, {'ContentType': 'application/json'}
 
 
 if __name__ == '__main__':
