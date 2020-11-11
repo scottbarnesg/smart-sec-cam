@@ -2,3 +2,7 @@
     display: inline-block;
     width: 49%
 }
+
+img {
+    min-width: 100%
+}
