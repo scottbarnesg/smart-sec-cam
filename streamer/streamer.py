@@ -62,7 +62,8 @@ class Streamer:
                 new_image = True
                 new_raw_img = False
                 # print("Encoded new image")
-                time.sleep(0.05)  # Prevents encoding from eating cpu time
+            else:
+                time.sleep(0.01)  # Prevents encoding from eating cpu time
         print('Exiting encoder thread')
 
     def send_image(self):
