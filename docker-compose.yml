@@ -1,0 +1,16 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: backend/
+    command: python server.py
+    ports:
+      - "5000:5000"
+    restart: always
+  frontend:
+    build:
+      context: frontend/smart-sec-cam
+    working_dir: /frontend
+    ports:
+      - "3000:3000"
+    restart: always
