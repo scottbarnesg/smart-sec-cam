@@ -11,7 +11,7 @@ new_image = False
 
 
 class Streamer:
-    def __init__(self, capture_delay=0.1, camera_port=0, compression_ratio=0.9, server_url="http://localhost:5000"):
+    def __init__(self, capture_delay=0.1, camera_port=0, compression_ratio=0.8, server_url="http://localhost:5000"):
         self.cap_delay = capture_delay
         self.cam_port = camera_port
         self.cam = cv2.VideoCapture(int(self.cam_port)) # Machine dependent
