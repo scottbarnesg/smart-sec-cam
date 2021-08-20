@@ -1,5 +1,4 @@
-flask
-flask_socketio
+python-socketio[client]
 requests
 opencv-python
 numpy

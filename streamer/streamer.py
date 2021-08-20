@@ -58,7 +58,7 @@ class Streamer:
         global error, new_image, new_raw_img
         while not error:
             if new_raw_img:
-                self.data = (cv2.imencode('.jpeg', self.image)[1]).tostring()
+                self.data = (cv2.imencode('.jpeg', self.image)[1]).tobytes()
                 new_image = True
                 new_raw_img = False
                 # print("Encoded new image")
