@@ -1,5 +1,5 @@
 flask
-flask_socketio=5.1.0
+flask_socketio==5.1.0
 requests
 opencv-python
 numpy
