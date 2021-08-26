@@ -71,9 +71,12 @@ class Streamer:
         self.socket.connect(self.server_url)
         while not error:
             if new_image:
-                self.socket.emit("new-image", {'hostname': self.hostname, 'image': self.data})
-                new_image = False
-                # print("Sent new image")
+                try:
+                    self.socket.emit("new-image", {'hostname': self.hostname, 'image': self.data})
+                    new_image = False
+                except socketio.exceptions.BadNamespaceError:
+                    self.socket.disconnect()
+                    self.socket.connect()
             else:
                 time.sleep(0.01)
 
