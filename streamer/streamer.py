@@ -87,7 +87,6 @@ class Streamer:
     def reconnect(self):
         self.socketio_client.disconnect()
         self.socketio_client.connect(self.server_url)
-        self.socketio_client.
 
     @socketio.on('error')
     def handle_error(self):
