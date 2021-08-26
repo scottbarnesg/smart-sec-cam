@@ -9,9 +9,10 @@ error = False
 new_raw_img = False
 new_image = False
 
+IMAGE_QUALITY = 80
 
 class Streamer:
-    def __init__(self, capture_delay=0.1, camera_port=0, compression_ratio=0.8, server_url="http://localhost:5000"):
+    def __init__(self, capture_delay=0.1, camera_port=0, compression_ratio=1.0, server_url="http://localhost:5000"):
         self.cap_delay = capture_delay
         self.cam_port = camera_port
         self.cam = cv2.VideoCapture(int(self.cam_port)) # Machine dependent
@@ -58,7 +59,8 @@ class Streamer:
         global error, new_image, new_raw_img
         while not error:
             if new_raw_img:
-                self.data = (cv2.imencode('.jpeg', self.image)[1]).tobytes()
+                encode_params = [int(cv2.IMWRITE_JPEG_QUALITY), IMAGE_QUALITY]
+                self.data = (cv2.imencode('.jpeg', self.image, encode_params)[1]).tobytes()
                 new_image = True
                 new_raw_img = False
                 # print("Encoded new image")
