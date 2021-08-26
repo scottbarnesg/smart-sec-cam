@@ -72,7 +72,7 @@ class Streamer:
 
     def send_image(self):
         global error, new_image
-        self.socket.connect(self.server_url)
+        socketio_client.connect(self.server_url)
         while not error:
             if new_image:
                 try:
