@@ -45,6 +45,7 @@ def check_room_staleness():
             if time.time() - last_connection_time > ROOM_TIMEOUT:
                 print("Room timed out: " + room)
                 socketio.emit("error")
+        time.sleep(1)
 
 
 if __name__ == '__main__':
