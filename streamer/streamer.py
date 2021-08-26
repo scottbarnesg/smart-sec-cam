@@ -64,7 +64,6 @@ class Streamer:
                 self.data = (cv2.imencode('.jpeg', self.image, encode_params)[1]).tobytes()
                 new_image = True
                 new_raw_img = False
-                # print("Encoded new image")
             else:
                 time.sleep(0.01)  # Prevents encoding from eating cpu time
         print('Exiting encoder thread')
@@ -77,9 +76,10 @@ class Streamer:
                 try:
                     self.socket.emit("new-image", {'hostname': self.hostname, 'image': self.data})
                     new_image = False
-                except socketio.exceptions.BadNamespaceError:
+                except socketio.exceptions.BadNamespaceError as e:
+                    print("Caught socketio exception: " + str(e))
                     self.socket.disconnect()
-                    self.socket.connect()
+                    self.socket.connect(self.server_url)
             else:
                 time.sleep(0.01)
 
