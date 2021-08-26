@@ -16,6 +16,7 @@ rooms = []
 # Sent from cameras, with a new image
 @socket.on("new-image")
 def get_image(data):
+    print("Got new image, emitting to clients")
     # Create room from hostname
     room = data['hostname']
     if room not in rooms:

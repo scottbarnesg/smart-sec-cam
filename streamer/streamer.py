@@ -76,6 +76,7 @@ class Streamer:
                 try:
                     self.socket.emit("new-image", {'hostname': self.hostname, 'image': self.data})
                     new_image = False
+                    print("Sent new image to server.")
                 except socketio.exceptions.BadNamespaceError as e:
                     print("Caught socketio exception: " + str(e))
                     self.socket.disconnect()
@@ -84,7 +85,7 @@ class Streamer:
                 time.sleep(0.01)
 
     def write(self):
-        cv2.imwrite('image.jpeg', streamer.image)
+        cv2.imwrite('image.jpeg', self.image)
 
 
 if __name__ == '__main__':
