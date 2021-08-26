@@ -27,7 +27,6 @@ class Streamer:
         self.data = None
         # Socketio for emitter
         self.server_url = server_url
-
         self.hostname = sock.gethostname()
 
     def capture_image(self, init=False):
@@ -78,7 +77,6 @@ class Streamer:
                 try:
                     socketio_client.emit("new-image", {'hostname': self.hostname, 'image': self.data})
                     new_image = False
-                    print("Sent new image to server.")
                 except socketio.exceptions.BadNamespaceError as e:
                     print("Caught socketio exception: " + str(e))
                     socketio_client.disconnect()
