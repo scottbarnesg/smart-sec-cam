@@ -9,7 +9,8 @@ error = False
 new_raw_img = False
 new_image = False
 
-IMAGE_QUALITY = 80
+IMAGE_QUALITY = 60
+
 
 class Streamer:
     def __init__(self, capture_delay=0.1, camera_port=0, compression_ratio=1.0, server_url="http://localhost:5000"):
