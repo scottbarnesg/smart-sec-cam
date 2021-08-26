@@ -25,7 +25,7 @@ class Streamer:
         self.data = None
         # Socketio for emitter
         self.server_url = server_url
-        self.socket = socketio.Client()
+        self.socketio_client = socketio.Client()
         self.hostname = sock.gethostname()
 
     def capture_image(self, init=False):
@@ -74,15 +74,25 @@ class Streamer:
         while not error:
             if new_image:
                 try:
-                    self.socket.emit("new-image", {'hostname': self.hostname, 'image': self.data})
+                    self.socketio_client.emit("new-image", {'hostname': self.hostname, 'image': self.data})
                     new_image = False
                     print("Sent new image to server.")
                 except socketio.exceptions.BadNamespaceError as e:
                     print("Caught socketio exception: " + str(e))
-                    self.socket.disconnect()
-                    self.socket.connect(self.server_url)
+                    self.socketio_client.disconnect()
+                    self.socketio_client.connect(self.server_url)
             else:
                 time.sleep(0.01)
+
+    def reconnect(self):
+        self.socketio_client.disconnect()
+        self.socketio_client.connect(self.server_url)
+        self.socketio_client.
+
+    @socketio.on('error')
+    def handle_error(self):
+        print("Got error message from server, reconnecting...")
+        self.reconnect()
 
     def write(self):
         cv2.imwrite('image.jpeg', self.image)
