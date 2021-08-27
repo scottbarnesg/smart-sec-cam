@@ -41,7 +41,7 @@ def get_rooms():
 
 def check_room_staleness():
     while True:
-        time.sleep(30)
+        time.sleep(10)
         socketio.emit('alive', {'timestamp': time.time()})
         print("Emitting alive message")
 

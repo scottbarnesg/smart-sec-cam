@@ -10,8 +10,17 @@ new_raw_img = False
 new_image = False
 
 IMAGE_QUALITY = 60
+CONNECTION_TIMEOUT = 30
 
 socketio_client = socketio.Client()
+last_server_communication_time = time.time()
+
+
+@socketio_client.on('alive')
+def handle_alive_message(*args):
+    global last_server_communication_time
+    print("Got alive message from server")
+    last_server_communication_time = time.time()
 
 
 class Streamer:
@@ -28,7 +37,6 @@ class Streamer:
         # Socketio for emitter
         self.server_url = server_url
         self.hostname = sock.gethostname()
-        self.last_server_communication_time = time.time()
 
     def capture_image(self, init=False):
         global error
@@ -71,13 +79,17 @@ class Streamer:
         print('Exiting encoder thread')
 
     def send_image(self):
-        global error, new_image
+        global error, new_image, last_server_communication_time
         socketio_client.connect(self.server_url)
         while not error:
             if new_image:
                 try:
                     socketio_client.emit("new-image", {'hostname': self.hostname, 'image': self.data})
                     new_image = False
+                    # Check for connection timeout
+                    if time.time() - last_server_communication_time > CONNECTION_TIMEOUT:
+                        print("Connection with server timed out, resetting connection...")
+                        self.reconnect()
                 except socketio.exceptions.BadNamespaceError as e:
                     print("Caught socketio exception: " + str(e))
                     socketio_client.disconnect()
@@ -88,11 +100,6 @@ class Streamer:
     def reconnect(self):
         socketio_client.disconnect()
         socketio_client.connect(self.server_url)
-
-    @socketio_client.on('alive')
-    def handle_error(self, *args):
-        print("Got alive message from server")
-        self.last_server_communication_time = time.time()
 
     def write(self):
         cv2.imwrite('image.jpeg', self.image)
