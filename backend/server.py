@@ -41,11 +41,9 @@ def get_rooms():
 
 def check_room_staleness():
     while True:
-        for room, last_connection_time in rooms.items():
-            if time.time() - last_connection_time > ROOM_TIMEOUT:
-                print("Room timed out: " + room)
-                socketio.emit("error")
-        time.sleep(1)
+        time.sleep(30)
+        socketio.emit('alive', {'timestamp': time.time()})
+        print("Emitting alive message")
 
 
 if __name__ == '__main__':

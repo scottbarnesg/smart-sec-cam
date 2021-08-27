@@ -28,6 +28,7 @@ class Streamer:
         # Socketio for emitter
         self.server_url = server_url
         self.hostname = sock.gethostname()
+        self.last_server_communication_time = time.time()
 
     def capture_image(self, init=False):
         global error
@@ -88,10 +89,10 @@ class Streamer:
         socketio_client.disconnect()
         socketio_client.connect(self.server_url)
 
-    @socketio_client.on('error')
+    @socketio_client.on('alive')
     def handle_error(self):
-        print("Got error message from server, reconnecting...")
-        self.reconnect()
+        print("Got alive message from server")
+        self.last_server_communication_time = time.time()
 
     def write(self):
         cv2.imwrite('image.jpeg', self.image)
