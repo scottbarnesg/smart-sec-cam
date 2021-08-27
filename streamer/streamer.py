@@ -19,7 +19,6 @@ last_server_communication_time = time.time()
 @socketio_client.on('alive')
 def handle_alive_message(*args):
     global last_server_communication_time
-    print("Got alive message from server")
     last_server_communication_time = time.time()
 
 
@@ -82,14 +81,15 @@ class Streamer:
         global error, new_image, last_server_communication_time
         socketio_client.connect(self.server_url)
         while not error:
+            # Check for connection timeout
+            if time.time() - last_server_communication_time > CONNECTION_TIMEOUT:
+                print("Connection with server timed out, resetting connection...")
+                self.reconnect()
+            # Check for new image
             if new_image:
                 try:
                     socketio_client.emit("new-image", {'hostname': self.hostname, 'image': self.data})
                     new_image = False
-                    # Check for connection timeout
-                    if time.time() - last_server_communication_time > CONNECTION_TIMEOUT:
-                        print("Connection with server timed out, resetting connection...")
-                        self.reconnect()
                 except socketio.exceptions.BadNamespaceError as e:
                     print("Caught socketio exception: " + str(e))
                     socketio_client.disconnect()
