@@ -90,7 +90,7 @@ class Streamer:
         socketio_client.connect(self.server_url)
 
     @socketio_client.on('alive')
-    def handle_error(self):
+    def handle_error(self, *args):
         print("Got alive message from server")
         self.last_server_communication_time = time.time()
 
