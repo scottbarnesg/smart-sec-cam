@@ -37,7 +37,7 @@ def on_join(data):
 
 @app.route("/rooms", methods=["GET"])
 def get_rooms():
-    return json.dumps({'rooms': rooms.keys()}), 200, {'ContentType': 'application/json'}
+    return json.dumps({'rooms': rooms}), 200, {'ContentType': 'application/json'}
 
 
 def check_room_staleness():

@@ -19,7 +19,7 @@ class App extends React.Component {
 
     updateRooms(rooms) {
         this.setState({
-            rooms: rooms,
+            rooms: Object.keys(rooms),
         }, () => {
             console.log(this.state.rooms);
         })
