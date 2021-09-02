@@ -17,15 +17,24 @@ class App extends React.Component {
         }
     }
 
+    updateRooms(rooms) {
+        this.setState({
+            rooms: rooms,
+        }, () => {
+            console.log(this.state.rooms);
+        })
+    }
+
 
     componentDidMount(){
+        // Get room list
         fetch(SERVER_URL + ROOMS_ENDPOINT)
-        .then(resp => resp.json())
-        .then(data => this.setState({
-                rooms: data.get('rooms')
-            })
-        )
-        .then(data => console.log(data.get('rooms')))
+        .then((resp) => resp.json())
+        .then((data) => this.updateRooms(data['rooms']))
+        // Configure socket
+        socket.on('rooms', (payload) => {
+            this.updateRooms(payload.rooms);
+        });
     }
 
     render() {
