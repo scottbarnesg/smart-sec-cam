@@ -14,6 +14,7 @@ class App extends React.Component {
         super(props)
         this.state = {
             rooms: [],
+            components: [],
         }
     }
 
@@ -21,16 +22,27 @@ class App extends React.Component {
         this.setState({
             rooms: Object.keys(rooms),
         }, () => {
+            this.renderComponents();
             console.log(this.state.rooms);
         })
+    }
+
+    renderComponents() {
+        let components = []
+        for (const room_name of this.state.rooms) {
+            components.push(<ImageViewer key={room_name} room={room_name}/>)
+        }
+        this.setState({
+           components: components,
+        });
     }
 
 
     componentDidMount(){
         // Get room list
         fetch(SERVER_URL + ROOMS_ENDPOINT)
-        .then((resp) => resp.json())
-        .then((data) => this.updateRooms(data['rooms']))
+            .then((resp) => resp.json())
+            .then((data) => this.updateRooms(data['rooms']))
         // Configure socket
         socket.on('rooms', (payload) => {
             this.updateRooms(payload.rooms);
@@ -40,8 +52,7 @@ class App extends React.Component {
     render() {
         return (
             <div className="App">
-                <ImageViewer room={"pi-sec-cam-1"} />
-                <ImageViewer room={"pi-sec-cam-2"} />
+                {this.state.components}
             </div>
         );
     }
