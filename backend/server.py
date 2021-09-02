@@ -2,6 +2,7 @@ import json
 import time
 
 from flask import Flask
+from flask_cors import CORS
 from flask_socketio import SocketIO, join_room
 import eventlet
 from engineio.payload import Payload
@@ -12,6 +13,7 @@ Payload.max_decode_packets = 500
 eventlet.monkey_patch()
 
 app = Flask(__name__)
+CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 rooms = {}
 
@@ -25,7 +27,6 @@ def get_image(data):
     # Emit to room
     image = data.get('image')
     socketio.emit('image', {'room': room, 'data': image}, room=room)
-    # socket.emit('image', {'data': data['image']})
 
 
 @socketio.on('join')
