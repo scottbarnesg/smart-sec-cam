@@ -1,31 +1,35 @@
-from flask import Flask, send_file
-from flask_socketio import SocketIO, join_room
 import json
-import io
+import time
+
+from flask import Flask
+from flask_cors import CORS
+from flask_socketio import SocketIO, join_room
 import eventlet
 from engineio.payload import Payload
+
+ROOM_TIMEOUT = 60
 
 Payload.max_decode_packets = 500
 eventlet.monkey_patch()
 
 app = Flask(__name__)
-socket = SocketIO(app, cors_allowed_origins="*")
-rooms = []
+CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
+rooms = {}
 
 
 # Sent from cameras, with a new image
-@socket.on("new-image")
+@socketio.on("new-image")
 def get_image(data):
     # Create room from hostname
-    room = data['hostname']
-    if room not in rooms:
-        rooms.append(room)
+    room = data.get('hostname')
+    rooms[room] = time.time()
     # Emit to room
-    socket.emit('image', {'room': room, 'data': data['image']}, room=room)
-    # socket.emit('image', {'data': data['image']})
+    image = data.get('image')
+    socketio.emit('image', {'room': room, 'data': image}, room=room)
 
 
-@socket.on('join')
+@socketio.on('join')
 def on_join(data):
     room = data['room']
     join_room(room)
@@ -36,5 +40,13 @@ def get_rooms():
     return json.dumps({'rooms': rooms}), 200, {'ContentType': 'application/json'}
 
 
+def check_room_staleness():
+    while True:
+        time.sleep(10)
+        socketio.emit('alive', {'timestamp': time.time()})
+        print("Emitting alive message")
+
+
 if __name__ == '__main__':
-    socket.run(app, host='0.0.0.0')
+    socketio.start_background_task(target=check_room_staleness)
+    socketio.run(app, host='0.0.0.0')

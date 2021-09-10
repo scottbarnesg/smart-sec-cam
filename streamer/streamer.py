@@ -8,9 +8,21 @@ error = False
 new_raw_img = False
 new_image = False
 
+IMAGE_QUALITY = 70
+CONNECTION_TIMEOUT = 30
+
+socketio_client = socketio.Client()
+last_server_communication_time = time.time()
+
+
+@socketio_client.on('alive')
+def handle_alive_message(*args):
+    global last_server_communication_time
+    last_server_communication_time = time.time()
+
 
 class Streamer:
-    def __init__(self, capture_delay=0.15, camera_port=0, compression_ratio=0.8, server_url="http://localhost:5000"):
+    def __init__(self, capture_delay=0.15, camera_port=0, compression_ratio=1.0, server_url="http://localhost:5000"):
         self.cap_delay = capture_delay
         self.cam_port = camera_port
         self.cam = cv2.VideoCapture(int(self.cam_port)) # Machine dependent
@@ -22,7 +34,6 @@ class Streamer:
         self.data = None
         # Socketio for emitter
         self.server_url = server_url
-        self.socket = socketio.Client()
         self.hostname = sock.gethostname()
 
     def capture_image(self, init=False):
@@ -57,27 +68,47 @@ class Streamer:
         global error, new_image, new_raw_img
         while not error:
             if new_raw_img:
-                self.data = (cv2.imencode('.jpeg', self.image)[1]).tobytes()
+                encode_params = [int(cv2.IMWRITE_JPEG_QUALITY), IMAGE_QUALITY]
+                self.data = (cv2.imencode('.jpeg', self.image, encode_params)[1]).tobytes()
                 new_image = True
                 new_raw_img = False
-                # print("Encoded new image")
             else:
                 time.sleep(0.01)  # Prevents encoding from eating cpu time
         print('Exiting encoder thread')
 
     def send_image(self):
-        global error, new_image
-        self.socket.connect(self.server_url)
+        global error, new_image, last_server_communication_time
+        socketio_client.connect(self.server_url)
         while not error:
+            # Check for connection timeout
+            if time.time() - last_server_communication_time > CONNECTION_TIMEOUT:
+                print("Connection with server timed out, resetting connection...")
+                self.reconnect()
+            # Check for new image
             if new_image:
-                self.socket.emit("new-image", {'hostname': self.hostname, 'image': self.data})
-                new_image = False
-                # print("Sent new image")
+                try:
+                    socketio_client.emit("new-image", {'hostname': self.hostname, 'image': self.data})
+                    new_image = False
+                except (sock.timeout, socketio.exceptions.ConnectionError, socketio.exceptions.BadNamespaceError) as e:
+                    print("Caught socketio exception: " + str(e))
+                    self.reconnect()
             else:
                 time.sleep(0.01)
 
+    def reconnect(self):
+        success = False
+        while not success:
+            try:
+                socketio_client.disconnect()
+                socketio_client.connect(self.server_url)
+                success = True
+            except (sock.timeout, socketio.exceptions.ConnectionError, socketio.exceptions.BadNamespaceError):
+                print("Error reconnecting to server, retrying...")
+                time.sleep(10)
+                continue
+
     def write(self):
-        cv2.imwrite('image.jpeg', streamer.image)
+        cv2.imwrite('image.jpeg', self.image)
 
 
 if __name__ == '__main__':

@@ -18,7 +18,7 @@ class ImageViewer extends React.Component {
 
     componentDidMount(){
         socket.on('image', (payload) => {
-            if (payload.room == this.props.room){
+            if (payload.room === this.props.room){
                 var image = new Blob( [ new Uint8Array( payload.data ) ], { type: "image/jpeg" } )
                 this.setState({
                     oldUrl: this.state.srcBlob,
