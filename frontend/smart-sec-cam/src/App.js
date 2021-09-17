@@ -5,7 +5,7 @@ import './App.css';
 
 import io from "socket.io-client";
 
-const SERVER_URL = "http://sec-cam-server:5000"
+const SERVER_URL = process.env.REACT_APP_API_URL
 const ROOMS_ENDPOINT = "/rooms"
 let socket = io(SERVER_URL)
 

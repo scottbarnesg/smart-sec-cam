@@ -2,7 +2,7 @@ import React from "react";
 import io from "socket.io-client";
 import "./ImageViewer.css";
 
-const SERVER_URL = "http://sec-cam-server:5000"
+const SERVER_URL = process.env.REACT_APP_API_URL
 let socket = io(SERVER_URL)
 
 class ImageViewer extends React.Component {
