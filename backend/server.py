@@ -7,6 +7,8 @@ from flask_socketio import SocketIO, join_room
 import eventlet
 from engineio.payload import Payload
 
+from redis_image_receiver import RedisImageReceiver
+
 ROOM_TIMEOUT = 60
 
 Payload.max_decode_packets = 500
@@ -40,13 +42,28 @@ def get_rooms():
     return json.dumps({'rooms': rooms}), 200, {'ContentType': 'application/json'}
 
 
-def check_room_staleness():
+def listen_for_images():
+    started_listener_thread = False
+    image_receiver = RedisImageReceiver()
     while True:
-        time.sleep(10)
-        socketio.emit('alive', {'timestamp': time.time()})
-        print("Emitting alive message")
+        # Check for new channels
+        channel_list = image_receiver.get_all_channels()
+        if channel_list != image_receiver.subscribed_channels:
+            image_receiver.set_channels(channel_list)
+            print(image_receiver.subscribed_channels)
+            if not started_listener_thread:
+                image_receiver.start_listener_thread()  # TODO: Can't call this until we have a subscribed channel
+        # Check for new messages
+        if image_receiver.has_message() and image_receiver.subscribed_channels:
+            message = image_receiver.get_message()
+            image = message.get("data")
+            room = str(message.get("channel"))
+            rooms[room] = time.time()
+            socketio.emit('image', {'room': room, 'data': image}, room=room)
+            print("Emitted message to: " + room)
+        time.sleep(0.01)
 
 
 if __name__ == '__main__':
-    socketio.start_background_task(target=check_room_staleness)
+    socketio.start_background_task(target=listen_for_images)
     socketio.run(app, host='0.0.0.0')
