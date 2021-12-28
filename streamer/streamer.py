@@ -11,14 +11,13 @@ from redis_image_sender import RedisImageSender
 shutdown = False
 
 IMAGE_QUALITY = 70
-CONNECTION_TIMEOUT = 30
 
 
 class Streamer:
     def __init__(self, server_address: str, server_port: int, capture_delay: float = 0.15, camera_port: int = 0,
                  compression_ratio: float = 1.0):
         self.cap_delay = capture_delay
-        self.cam = cv2.VideoCapture(int(camera_port)) # Machine dependent
+        self.cam = cv2.VideoCapture(int(camera_port))  # Machine dependent
         # Set video resolution
         self._set_video_resolution(compression_ratio)
         # Image data queues
@@ -56,6 +55,7 @@ class Streamer:
         while not shutdown:
             self.raw_image_queue.put(self.capture_image())
             time.sleep(self.cap_delay)  # Prevents capture from eating cpu time
+        print('Exited image capture thread')
 
     def encode_images(self):
         global shutdown
@@ -78,6 +78,7 @@ class Streamer:
                 print("Caught connection error to server, trying to reconnect...")
                 time.sleep(1)
                 self.reconnect()
+        print("Exited image sending thread")
 
     def reconnect(self):
         self.image_sender = RedisImageSender(socket.gethostname(), self.server_address, self.server_port)
@@ -87,7 +88,7 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--redis-url', help='Server address to stream images to', default='localhost')
-    parser.add_argument('--redis-port', help='Server port to stream images to', default=6379)
+    parser.add_argument('--redis-port', help='Server port to stream images to', default=6380)
     args = parser.parse_args()
     # Setup streamer and start threads
     streamer = Streamer(args.redis_url, args.redis_port)
