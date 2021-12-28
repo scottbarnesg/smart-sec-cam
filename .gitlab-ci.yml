@@ -5,10 +5,10 @@ build:docker:backend:
   stage: build
   script:
     - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/sec-cam-server/backend:${CI_COMMIT_BRANCH}" backend/
-    - docker push "pi4-ubuntu-server:5050/scottgbarnes/sec-cam-backend:${CI_COMMIT_BRANCH}"
+    - docker push "pi4-ubuntu-server:5050/scottgbarnes/sec-cam-server/backend:${CI_COMMIT_BRANCH}"
 
 build:docker:frontend:
   stage: build
   script:
     - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/sec-cam-server/frontend:${CI_COMMIT_BRANCH}" frontend/smart-sec-cam
-    - docker push "pi4-ubuntu-server:5050/scottgbarnes/sec-cam-frontend:${CI_COMMIT_BRANCH}"
+    - docker push "pi4-ubuntu-server:5050/scottgbarnes/sec-cam-server/frontend:${CI_COMMIT_BRANCH}"
