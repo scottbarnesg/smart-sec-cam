@@ -1,4 +1,4 @@
-FROM python:3.8-buster
+FROM python:3.8-slim-buster
 
 MAINTAINER Scott Barnes "scott.barnes.g@gmail.com"
 

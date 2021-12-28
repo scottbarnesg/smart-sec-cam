@@ -8,7 +8,7 @@ services:
   backend:
     build:
       context: backend/
-    image: "pi4-ubuntu-server:5050/scottgbarnes/sec-cam-backend:${CI_COMMIT_BRANCH}"
+    image: "pi4-ubuntu-server:5050/scottgbarnes/sec-cam-server/backend:${CI_COMMIT_BRANCH}"
     command: python server.py --redis-url redis
     ports:
       - "5000:5000"
@@ -18,7 +18,7 @@ services:
   frontend:
     build:
       context: frontend/smart-sec-cam
-    image: "pi4-ubuntu-server:5050/scottgbarnes/sec-cam-frontend:${CI_COMMIT_BRANCH}"
+    image: "pi4-ubuntu-server:5050/scottgbarnes/sec-cam-server/frontend:${CI_COMMIT_BRANCH}"
     working_dir: /frontend
     ports:
       - "3000:3000"
