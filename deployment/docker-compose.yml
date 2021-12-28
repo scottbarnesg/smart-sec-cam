@@ -1,15 +1,13 @@
 version: '3'
 services:
   redis:
-    build:
-      context: redis
+    image: "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/redis:master"
     ports:
       - "6379:6379"
       - "6380:6380"
     restart: always
   backend:
-    build:
-      context: backend/
+    image: "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/backend:master"
     command: python server.py --redis-url redis
     ports:
       - "5000:5000"
@@ -17,8 +15,7 @@ services:
       - redis
     restart: always
   frontend:
-    build:
-      context: frontend/smart-sec-cam
+    image: "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/frontend:master"
     working_dir: /frontend
     ports:
       - "3000:3000"
