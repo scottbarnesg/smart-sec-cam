@@ -3,3 +3,4 @@ requests
 opencv-python
 numpy
 eventlet
+redis
