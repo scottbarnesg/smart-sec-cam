@@ -4,6 +4,7 @@ import socket
 from threading import Thread
 
 import cv2
+import redis.exceptions
 
 from redis_image_sender import RedisImageSender
 
@@ -74,7 +75,7 @@ class Streamer:
             image_data = self.ready_image_queue.get()
             try:
                 self.image_sender.send_message(image_data)
-            except ConnectionError:
+            except redis.exceptions.ConnectionError:
                 print("Caught connection error to server, trying to reconnect...")
                 time.sleep(1)
                 self.reconnect()
