@@ -6,7 +6,7 @@ from threading import Thread
 import cv2
 import redis.exceptions
 
-from camera import UsbCamera
+from camera import UsbCamera, RPiCamera
 from redis_image_sender import RedisImageSender
 
 
@@ -16,9 +16,13 @@ IMAGE_QUALITY = 70
 
 
 class Streamer:
-    def __init__(self, server_address: str, server_port: int, capture_delay: float = 0.1, camera_port: int = 0):
+    def __init__(self, server_address: str, server_port: int, capture_delay: float = 0.1, camera_port: int = 0,
+                 use_pi_camera: bool = False):
         self.cap_delay = capture_delay
-        self.camera = UsbCamera(camera_port)
+        if use_pi_camera:
+            self.camera = RPiCamera()
+        else:
+            self.camera = UsbCamera(camera_port)
         # Image data queues
         self.raw_image_queue = queue.Queue()
         self.ready_image_queue = queue.Queue()
@@ -73,9 +77,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--redis-url', help='Server address to stream images to', default='localhost')
     parser.add_argument('--redis-port', help='Server port to stream images to', default=6380)
+    parser.add_argument('--pi-cam', help="Use Raspberry Pi camera module", action='store_true')
     args = parser.parse_args()
     # Setup streamer and start threads
-    streamer = Streamer(args.redis_url, args.redis_port)
+    streamer = Streamer(args.redis_url, args.redis_port, use_pi_camera=args.pi_cam)
     captureThread = Thread(target=streamer.run)
     encoderThread = Thread(target=streamer.encode_images)
     senderThread = Thread(target=streamer.send_images)

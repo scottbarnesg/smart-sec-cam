@@ -1,6 +1,8 @@
 from typing import Tuple
+from io import BytesIO
 
 import cv2
+from picamera import PiCamera
 
 
 class UsbCamera:
@@ -24,3 +26,17 @@ class UsbCamera:
         self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[1])
         image = self.capture_image()
         print("Video resolution: " + str(image.shape))
+
+
+class RPiCamera:
+    def __init__(self):
+        self.camera = PiCamera()
+
+    def capture_image(self):
+        stream = BytesIO()
+        self.camera.capture(stream, format='bgr')
+        return stream
+
+    def close(self):
+        self.camera.release()
+
