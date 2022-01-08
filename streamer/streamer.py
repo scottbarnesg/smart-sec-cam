@@ -3,7 +3,6 @@ import time
 import socket
 from threading import Thread
 
-import cv2
 import redis.exceptions
 
 from camera import UsbCamera, RPiCamera
@@ -12,15 +11,13 @@ from redis_image_sender import RedisImageSender
 
 shutdown = False
 
-IMAGE_QUALITY = 70
-
 
 class Streamer:
     def __init__(self, server_address: str, server_port: int, capture_delay: float = 0.1, camera_port: int = 0,
-                 use_pi_camera: bool = False):
+                 use_pi_camera: bool = False, image_rotation: int = 0):
         self.cap_delay = capture_delay
         if use_pi_camera:
-            self.camera = RPiCamera()
+            self.camera = RPiCamera(image_rotation=image_rotation)
         else:
             self.camera = UsbCamera(camera_port)
         # Image data queues
@@ -30,7 +27,7 @@ class Streamer:
         self.server_port = int(server_port)
         self.image_sender = RedisImageSender(socket.gethostname(), self.server_address, self.server_port)
 
-    def run(self):
+    def capture_images(self):
         global shutdown
         print('Starting image capture thread')
         while not shutdown:
@@ -67,10 +64,11 @@ if __name__ == '__main__':
     parser.add_argument('--redis-url', help='Server address to stream images to', default='localhost')
     parser.add_argument('--redis-port', help='Server port to stream images to', default=6380)
     parser.add_argument('--pi-cam', help="Use Raspberry Pi camera module", action='store_true')
+    parser.add_argument('--rotation', help="Angle to rotate image to", default=0)
     args = parser.parse_args()
     # Setup streamer and start threads
-    streamer = Streamer(args.redis_url, args.redis_port, use_pi_camera=args.pi_cam)
-    captureThread = Thread(target=streamer.run)
+    streamer = Streamer(args.redis_url, args.redis_port, use_pi_camera=args.pi_cam, image_rotation=args.rotation)
+    captureThread = Thread(target=streamer.capture_images)
     senderThread = Thread(target=streamer.send_images)
     captureThread.start()
     senderThread.start()

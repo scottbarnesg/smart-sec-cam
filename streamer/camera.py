@@ -30,7 +30,7 @@ class UsbCamera:
 
 
 class RPiCamera:
-    def __init__(self, resolution: Tuple[int, int] = (640, 480), jpeg_quality: int = 70, rotation: int = 180):
+    def __init__(self, resolution: Tuple[int, int] = (640, 480), jpeg_quality: int = 70, rotation: int = 0):
         from picamera import PiCamera  # Only import picamera at runtime, since it won't install on other systems
 
         self.encode_params = [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality]
@@ -40,7 +40,7 @@ class RPiCamera:
 
     def capture_image(self):
         frame = np.empty((self.camera.resolution[1], self.camera.resolution[0], 3), dtype=np.uint8)
-        self.camera.capture(frame, format='bgr')
+        self.camera.capture(frame, format='bgr', use_video_port=True)
         processed_image_data = (cv2.imencode('.jpeg', frame, self.encode_params)[1]).tobytes()
         return processed_image_data
 
