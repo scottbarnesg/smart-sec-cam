@@ -2,6 +2,7 @@ from typing import Tuple
 from io import BytesIO
 
 import cv2
+import numpy as np
 
 
 class UsbCamera:
@@ -35,7 +36,7 @@ class RPiCamera:
     def capture_image(self):
         stream = BytesIO()
         self.camera.capture(stream, format='bgr')
-        return stream
+        return np.fromstring(stream.getvalue(), dtype=np.uint8)
 
     def close(self):
         self.camera.release()
