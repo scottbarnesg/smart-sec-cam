@@ -6,6 +6,7 @@ from threading import Thread
 import cv2
 import redis.exceptions
 
+from camera import UsbCamera
 from redis_image_sender import RedisImageSender
 
 
@@ -15,12 +16,9 @@ IMAGE_QUALITY = 70
 
 
 class Streamer:
-    def __init__(self, server_address: str, server_port: int, capture_delay: float = 0.15, camera_port: int = 0,
-                 compression_ratio: float = 1.0):
+    def __init__(self, server_address: str, server_port: int, capture_delay: float = 0.1, camera_port: int = 0):
         self.cap_delay = capture_delay
-        self.cam = cv2.VideoCapture(int(camera_port))  # Machine dependent
-        # Set video resolution
-        self._set_video_resolution(compression_ratio)
+        self.camera = UsbCamera(camera_port)
         # Image data queues
         self.raw_image_queue = queue.Queue()
         self.ready_image_queue = queue.Queue()
@@ -29,33 +27,18 @@ class Streamer:
         self.server_port = int(server_port)
         self.image_sender = RedisImageSender(socket.gethostname(), self.server_address, self.server_port)
 
-    def _set_video_resolution(self, compression_ratio: float):
-        # Capture initial image
-        image = self.capture_image()
-        print('Source video resolution: ' + str(image.shape))
-        # Get scaled-down resolution
-        width = compression_ratio * image.shape[0]
-        height = compression_ratio * image.shape[1]
-        self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-        # Capture a second image and verify it worked
-        image = self.capture_image()
-        print('Compressed video resolution: ' + str(image.shape))
-
-    def capture_image(self):
-        global shutdown
-        ret, frame = self.cam.read()
-        if not ret:
-            shutdown = True
-            raise RuntimeError('Failed to capture image - check camera port value')
-        return frame
-
     def run(self):
         global shutdown
         print('Starting image capture thread')
         while not shutdown:
-            self.raw_image_queue.put(self.capture_image())
-            time.sleep(self.cap_delay)  # Prevents capture from eating cpu time
+            try:
+                self.raw_image_queue.put(self.camera.capture_image())
+                time.sleep(self.cap_delay)  # Prevents capture from eating cpu time
+            except RuntimeError as e:
+                print(e)
+                shutdown = True
+                break
+        self.camera.close()
         print('Exited image capture thread')
 
     def encode_images(self):

@@ -1,6 +1,2 @@
-python-socketio[client]==5.1.0
-requests
 opencv-python-headless
-numpy
-eventlet
 redis
