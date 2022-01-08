@@ -28,9 +28,10 @@ class UsbCamera:
 
 
 class RPiCamera:
-    def __init__(self):
+    def __init__(self, resolution: Tuple[int, int] = (480, 640), jpeg_quality: int = 70):
         from picamera import PiCamera  # Only import picamera at runtime, since it won't install on other systems
         self.camera = PiCamera()
+        self._set_resolution(resolution)
 
     def capture_image(self):
         stream = BytesIO()
@@ -40,4 +41,7 @@ class RPiCamera:
 
     def close(self):
         self.camera.release()
+
+    def _set_resolution(self, resolution: Tuple[int, int]):
+        self.camera.resolution = resolution
 
