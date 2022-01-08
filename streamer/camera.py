@@ -2,6 +2,7 @@ from typing import Tuple
 from io import BytesIO
 
 import cv2
+import numpy as np
 
 
 class UsbCamera:
@@ -37,10 +38,10 @@ class RPiCamera:
         self._set_resolution(resolution)
 
     def capture_image(self):
-        stream = BytesIO()
-        self.camera.capture(stream, format='jpeg', quality=self.jpeg_quality)
-        stream.seek(0)
-        return stream.read()
+        frame = np.empty((self.camera.resolution[0], self.camera.resolution[1], 3), dtype=np.uint8)
+        self.camera.capture(frame, format='bgr')
+        processed_image_data = (cv2.imencode('.jpeg', frame, self.encode_params)[1]).tobytes()
+        return processed_image_data
 
     def close(self):
         self.camera.release()
