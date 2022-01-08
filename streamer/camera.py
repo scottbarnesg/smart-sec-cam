@@ -6,17 +6,19 @@ import numpy as np
 
 
 class UsbCamera:
-    def __init__(self, usb_port: int = 0, resolution: Tuple[int, int] = (480, 640)):
+    def __init__(self, usb_port: int = 0, resolution: Tuple[int, int] = (480, 640), jpeg_quality: int = 70):
         self.usb_port = usb_port
         self.resolution = resolution
         self.camera = cv2.VideoCapture(int(self.usb_port))
         self._set_resolution()
+        self.encode_params = [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality]
 
     def capture_image(self):
         ret, frame = self.camera.read()
         if not ret:
             raise RuntimeError('Failed to capture image - check camera port value')
-        return frame
+        processed_image_data = (cv2.imencode('.jpeg', frame, self.encode_params)[1]).tobytes()
+        return processed_image_data
 
     def close(self):
         self.camera.release()
@@ -35,8 +37,8 @@ class RPiCamera:
 
     def capture_image(self):
         stream = BytesIO()
-        self.camera.capture(stream, format='bgr')
-        return np.fromstring(stream.getvalue(), dtype=np.uint8)
+        self.camera.capture(stream, format='jpeg')
+        return stream
 
     def close(self):
         self.camera.release()

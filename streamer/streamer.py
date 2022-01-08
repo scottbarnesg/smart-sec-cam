@@ -24,8 +24,7 @@ class Streamer:
         else:
             self.camera = UsbCamera(camera_port)
         # Image data queues
-        self.raw_image_queue = queue.Queue()
-        self.ready_image_queue = queue.Queue()
+        self.image_queue = queue.Queue()
         # Image sending client
         self.server_address = server_address
         self.server_port = int(server_port)
@@ -36,7 +35,7 @@ class Streamer:
         print('Starting image capture thread')
         while not shutdown:
             try:
-                self.raw_image_queue.put(self.camera.capture_image())
+                self.image_queue.put(self.camera.capture_image())
                 time.sleep(self.cap_delay)  # Prevents capture from eating cpu time
             except RuntimeError as e:
                 print(e)
@@ -45,21 +44,11 @@ class Streamer:
         self.camera.close()
         print('Exited image capture thread')
 
-    def encode_images(self):
-        global shutdown
-        print('Starting encoding thread')
-        encode_params = [int(cv2.IMWRITE_JPEG_QUALITY), IMAGE_QUALITY]
-        while not shutdown:
-            raw_image = self.raw_image_queue.get()
-            processed_image_data = (cv2.imencode('.jpeg', raw_image, encode_params)[1]).tobytes()
-            self.ready_image_queue.put(processed_image_data)
-        print('Exiting encoder thread')
-
     def send_images(self):
         global shutdown
         print("Started image sending thread.")
         while not shutdown:
-            image_data = self.ready_image_queue.get()
+            image_data = self.image_queue.get()
             try:
                 self.image_sender.send_message(image_data)
             except redis.exceptions.ConnectionError:
@@ -82,8 +71,6 @@ if __name__ == '__main__':
     # Setup streamer and start threads
     streamer = Streamer(args.redis_url, args.redis_port, use_pi_camera=args.pi_cam)
     captureThread = Thread(target=streamer.run)
-    encoderThread = Thread(target=streamer.encode_images)
     senderThread = Thread(target=streamer.send_images)
     captureThread.start()
-    encoderThread.start()
     senderThread.start()
