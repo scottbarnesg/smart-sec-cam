@@ -38,7 +38,7 @@ class RPiCamera:
         self._set_resolution(resolution)
 
     def capture_image(self):
-        frame = np.empty((self.camera.resolution[0], self.camera.resolution[1], 3), dtype=np.uint8)
+        frame = np.empty((self.camera.resolution[1], self.camera.resolution[0], 3), dtype=np.uint8)
         self.camera.capture(frame, format='bgr')
         processed_image_data = (cv2.imencode('.jpeg', frame, self.encode_params)[1]).tobytes()
         return processed_image_data
