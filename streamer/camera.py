@@ -2,16 +2,15 @@ from typing import Tuple
 from io import BytesIO
 
 import cv2
-import numpy as np
 
 
 class UsbCamera:
     def __init__(self, usb_port: int = 0, resolution: Tuple[int, int] = (480, 640), jpeg_quality: int = 70):
         self.usb_port = usb_port
         self.resolution = resolution
+        self.encode_params = [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality]
         self.camera = cv2.VideoCapture(int(self.usb_port))
         self._set_resolution()
-        self.encode_params = [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality]
 
     def capture_image(self):
         ret, frame = self.camera.read()
