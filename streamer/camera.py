@@ -38,7 +38,7 @@ class RPiCamera:
     def capture_image(self):
         stream = BytesIO()
         self.camera.capture(stream, format='jpeg')
-        return stream
+        return stream.read()
 
     def close(self):
         self.camera.release()
