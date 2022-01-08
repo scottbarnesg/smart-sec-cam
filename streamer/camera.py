@@ -25,8 +25,6 @@ class UsbCamera:
     def _set_resolution(self):
         self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution[0])
         self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[1])
-        image = self.capture_image()
-        print("Video resolution: " + str(image.shape))
 
 
 class RPiCamera:
