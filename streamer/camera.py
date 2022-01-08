@@ -5,7 +5,7 @@ import cv2
 
 
 class UsbCamera:
-    def __init__(self, usb_port: int = 0, resolution: Tuple[int, int] = (480, 640), jpeg_quality: int = 70):
+    def __init__(self, usb_port: int = 0, resolution: Tuple[int, int] = (640, 480), jpeg_quality: int = 70):
         self.usb_port = usb_port
         self.resolution = resolution
         self.encode_params = [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality]
@@ -23,12 +23,13 @@ class UsbCamera:
         self.camera.release()
 
     def _set_resolution(self):
-        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution[0])
-        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[1])
+        # OpenCV is (height, width), not (width, height)
+        self.camera.set(cv2.CAP_PROP_FRAME_WIDTH, self.resolution[1])
+        self.camera.set(cv2.CAP_PROP_FRAME_HEIGHT, self.resolution[0])
 
 
 class RPiCamera:
-    def __init__(self, resolution: Tuple[int, int] = (480, 640), jpeg_quality: int = 70):
+    def __init__(self, resolution: Tuple[int, int] = (640, 480), jpeg_quality: int = 70):
         from picamera import PiCamera  # Only import picamera at runtime, since it won't install on other systems
         self.camera = PiCamera()
         self._set_resolution(resolution)
