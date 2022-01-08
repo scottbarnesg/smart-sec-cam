@@ -2,7 +2,6 @@ from typing import Tuple
 from io import BytesIO
 
 import cv2
-from picamera import PiCamera
 
 
 class UsbCamera:
@@ -30,6 +29,7 @@ class UsbCamera:
 
 class RPiCamera:
     def __init__(self):
+        from picamera import PiCamera  # Only import picamera at runtime, since it won't install on other systems
         self.camera = PiCamera()
 
     def capture_image(self):
