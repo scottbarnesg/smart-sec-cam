@@ -2,15 +2,16 @@ version: '3'
 services:
   redis:
     build:
-      context: redis
+      context: backend/smart_sec_cam/redis
     ports:
       - "6379:6379"
       - "6380:6380"
     restart: always
-  backend:
+  server:
     build:
       context: backend/
-    command: python server.py --redis-url redis
+      dockerfile: smart_sec_cam/server/Dockerfile
+    command: python smart_sec_cam/server/server.py --redis-url redis
     ports:
       - "5000:5000"
     depends_on:

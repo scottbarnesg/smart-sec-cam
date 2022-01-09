@@ -1,10 +1,11 @@
 # Self-Hosted Home Security Camera System
 
-A self-hosted home security camera solution that lets you turn any linux system (e.g. a raspberry pi) into a smart security camera.
+A privacy-focused, intelligent security camera system.
 
 ## Features:
-- Multi-camera support w/ minimal configuration
+- Multi-camera support w/ minimal configuration. Supports USB cameras and the Raspberry Pi camera module.
 - Motion detection that automatically saves videos.
+- Encrypted in transit, both from the cameras to the server and the server to your browser.
 - Self-Hosted
 - Free and Open Source
 
@@ -22,11 +23,6 @@ A self-hosted home security camera solution that lets you turn any linux system 
 NOTE: These instructions assume you are deploying to a raspberry pi running Raspbian OS.
 
 1. Clone this repository
-2. Install the requirements: `python3 -m pip install -r streamer/requirements.txt`
-3. Install OpenCV. Here's a 
-[helper script](https://github.com/scottbarnesg/Automated-OpenCV-Install/blob/master/opencv-py3-install.sh) 
-for compiling it from source if needed.**
-4. Update `--server_url` in `run.sh` to point at the host you deployed the server to.
-5. In the Web UI, you should see live video from that camera.
-
-** NOTE: If you have 1 GB of memory or less, you will need to increase the size of the swap on the host before compiling.
+2. Install the package: `cd backend && python3 -m pip install .[streamer]`
+3. Update `--server_url` in `run.sh` to point at the host you deployed the server to.
+4. In the Web UI, you should see live video from that camera.

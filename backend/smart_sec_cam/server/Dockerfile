@@ -2,10 +2,10 @@ FROM python:3.10-slim-buster
 
 MAINTAINER Scott Barnes "scott.barnes.g@gmail.com"
 
-WORKDIR /backend
+WORKDIR backend/
 COPY . .
 
 RUN python -m pip install --upgrade pip
-RUN python -m pip install -r requirements.txt
+RUN python -m pip install .[server]
 
-CMD ["python", "server.py", "--redis-url", "redis"]
+CMD ["python", "smart_sec_cam/server/server.py", "--redis-url", "redis"]

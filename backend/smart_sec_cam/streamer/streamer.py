@@ -6,7 +6,7 @@ from threading import Thread
 import redis.exceptions
 
 from camera import UsbCamera, RPiCamera
-from redis_image_sender import RedisImageSender
+from smart_sec_cam.redis import RedisImageSender
 
 
 shutdown = False

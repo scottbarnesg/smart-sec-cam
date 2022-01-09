@@ -6,7 +6,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO, join_room
 
-from redis_image_receiver import RedisImageReceiver
+from smart_sec_cam.redis import RedisImageReceiver
 
 
 eventlet.monkey_patch()

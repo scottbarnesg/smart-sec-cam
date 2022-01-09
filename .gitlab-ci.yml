@@ -4,7 +4,7 @@ stages:
 build:docker:backend:
   stage: build
   script:
-    - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/backend:${CI_COMMIT_BRANCH}" backend/
+    - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/backend:${CI_COMMIT_BRANCH}" -f backend/smart_sec_cam/server/Dockerfile backend/
     - docker push "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/backend:${CI_COMMIT_BRANCH}"
 
 build:docker:frontend:
@@ -16,5 +16,5 @@ build:docker:frontend:
 build:docker:redis:
   stage: build
   script:
-    - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/redis:${CI_COMMIT_BRANCH}" redis/
+    - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/redis:${CI_COMMIT_BRANCH}" backend/smart_sec_cam/redis
     - docker push "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/redis:${CI_COMMIT_BRANCH}"
