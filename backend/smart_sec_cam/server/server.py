@@ -35,6 +35,7 @@ def listen_for_images(redis_url: str, redis_port: int):
     image_receiver = RedisImageReceiver(redis_url, redis_port)
     while True:
         # Check for new channels
+        # TODO: This should only be done every N seconds
         channel_list = image_receiver.get_all_channels()
         if channel_list != image_receiver.subscribed_channels:
             image_receiver.set_channels(channel_list)
