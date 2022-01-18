@@ -6,11 +6,13 @@ import cv2
 
 
 class VideoWriter:
+    FILENAME_DELIM = "__"
+
     def __init__(self, channel: str, path="data/videos/", filetype: str = ".avi", fps: int = 10,
                  resolution: Tuple[int, int] = (640, 480)):
         fourcc = cv2.VideoWriter_fourcc(*'MJPG')
         date = datetime.datetime.now()
-        filename = channel + "-" + date.isoformat() + filetype
+        filename = channel + self.FILENAME_DELIM + date.isoformat() + filetype
         full_filepath = os.path.join(path, filename)
         self.writer = cv2.VideoWriter(full_filepath, fourcc, fps, resolution)
         self._make_target_dir(path)

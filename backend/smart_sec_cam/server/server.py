@@ -2,12 +2,12 @@ import json
 import time
 
 import eventlet
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_cors import CORS
 from flask_socketio import SocketIO, join_room
 
 from smart_sec_cam.redis import RedisImageReceiver
-
+from smart_sec_cam.video.manager import VideoManager
 
 eventlet.monkey_patch()
 app = Flask(__name__)
@@ -27,6 +27,17 @@ def on_join(data):
 def get_rooms():
     global rooms
     return json.dumps({'rooms': rooms}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/videos", methods=["GET"])
+def get_video_list():
+    video_manager = VideoManager()
+    return json.dumps({'videos': video_manager.get_video_filenames_by_date()}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/video/<file_name>", methods=["GET"])
+def get_video(file_name: str):
+    return send_from_directory("/home/scottgbarnes/Documents/smart-sec-cam/backend/data/videos/", file_name, as_attachment=False)
 
 
 def listen_for_images(redis_url: str, redis_port: int):
