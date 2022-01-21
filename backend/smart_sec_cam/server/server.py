@@ -37,7 +37,8 @@ def get_video_list():
 
 @app.route("/video/<file_name>", methods=["GET"])
 def get_video(file_name: str):
-    return send_from_directory("/home/scottgbarnes/Documents/smart-sec-cam/backend/data/videos/", file_name, as_attachment=False)
+    # TODO: Make the target directory a command-line arg
+    return send_from_directory("data/videos/", file_name, as_attachment=False)
 
 
 def listen_for_images(redis_url: str, redis_port: int):

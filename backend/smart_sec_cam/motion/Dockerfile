@@ -6,4 +6,4 @@ WORKDIR backend/
 COPY . .
 
 RUN python -m pip install --upgrade pip
-RUN python -m pip install .[server]
+RUN python -m pip install .[detector]

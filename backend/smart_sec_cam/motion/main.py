@@ -1,8 +1,3 @@
-import json
-from typing import List
-
-import requests
-
 from smart_sec_cam.motion.detection import MotionDetector
 from smart_sec_cam.redis import RedisImageReceiver
 

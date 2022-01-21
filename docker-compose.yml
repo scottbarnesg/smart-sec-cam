@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   redis:
     build:
@@ -12,11 +13,22 @@ services:
       context: backend/
       dockerfile: smart_sec_cam/server/Dockerfile
     command: python smart_sec_cam/server/server.py --redis-url redis
+    volumes:
+      - ./data/videos/:/backend/data/videos/
     ports:
       - "5000:5000"
     depends_on:
       - redis
     restart: always
+  motion-detection:
+    build:
+      context: backend/
+      dockerfile: smart_sec_cam/motion/Dockerfile
+    command: python smart_sec_cam/motion/main.py --redis-url redis
+    volumes:
+      - ./data/videos/:/backend/data/videos/
+    depends_on:
+      - redis
   frontend:
     build:
       context: frontend/smart-sec-cam
