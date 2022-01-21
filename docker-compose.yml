@@ -29,6 +29,7 @@ services:
       - ./data/videos/:/backend/data/videos/
     depends_on:
       - redis
+    restart: always
   frontend:
     build:
       context: frontend/smart-sec-cam
