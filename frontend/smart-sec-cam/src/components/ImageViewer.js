@@ -35,7 +35,7 @@ class ImageViewer extends React.Component {
     render() {
         return (
             <div className="imageviewer">
-                <img src={this.state.srcBlob}></img>
+                <img src={this.state.srcBlob} alt={this.props.room} ></img>
             </div>
         );
     }

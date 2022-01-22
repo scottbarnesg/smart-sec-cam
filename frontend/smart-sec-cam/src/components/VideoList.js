@@ -9,13 +9,14 @@ class VideoList extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            videoFileNames: null,
+            videoFileNames: [],
         };
     }
 
-    async setVideoList(vidoeList) {
+    async setVideoList(videoList) {
+        console.log(videoList);
         this.setState({
-            videoFileNames: vidoeList,
+            videoFileNames: videoList,
         });
         
     }
@@ -30,9 +31,15 @@ class VideoList extends React.Component {
     render() {
         return (
             <div>
-                {this.state.videoFileNames.map((item, index) => (
-                    <Item key={index} item={item} />
-                ))}
+                <React.Fragment>
+                    <ul className="list-group">
+                    {this.state.videoFileNames.map(videoFileName => (
+                        <li>
+                            {videoFileName}
+                        </li>
+                    ))}
+                    </ul>
+                </React.Fragment>
             </div>
         );
     }

@@ -32,7 +32,7 @@ def get_rooms():
 @app.route("/videos", methods=["GET"])
 def get_video_list():
     video_manager = VideoManager()
-    return json.dumps({'videos': video_manager.get_video_filenames_by_date()}), 200, {'ContentType': 'application/json'}
+    return json.dumps({'videos': video_manager.get_video_filenames()}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/video/<file_name>", methods=["GET"])

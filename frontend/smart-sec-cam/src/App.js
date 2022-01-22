@@ -1,5 +1,6 @@
 import React from "react";
 import ImageViewer from "./components/ImageViewer";
+import NavBar from "./components/NavBar";
 
 import './App.css';
 
@@ -52,6 +53,7 @@ class App extends React.Component {
     render() {
         return (
             <div className="App">
+                <NavBar />
                 {this.state.components}
             </div>
         );
