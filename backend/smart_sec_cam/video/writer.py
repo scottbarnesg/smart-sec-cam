@@ -8,7 +8,7 @@ import cv2
 class VideoWriter:
     FILENAME_DELIM = "__"
 
-    def __init__(self, channel: str, path="data/videos/", filetype: str = ".avi", fps: int = 10,
+    def __init__(self, channel: str, path="data/videos/", filetype: str = ".mp4", fps: int = 10,
                  resolution: Tuple[int, int] = (640, 480)):
         fourcc = cv2.VideoWriter_fourcc(*'MJPG')
         date = datetime.datetime.now()

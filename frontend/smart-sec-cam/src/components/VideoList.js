@@ -1,4 +1,5 @@
 import React from "react";
+import VideoPlayer from "./VideoPlayer";
 
 
 const SERVER_URL = process.env.REACT_APP_API_URL
@@ -10,10 +11,12 @@ class VideoList extends React.Component {
         super(props);
         this.state = {
             videoFileNames: [],
+            selectedVideoFile: null,
+            showVideoPlayer: false,
         };
     }
 
-    async setVideoList(videoList) {
+    setVideoList(videoList) {
         console.log(videoList);
         this.setState({
             videoFileNames: videoList,
@@ -28,14 +31,24 @@ class VideoList extends React.Component {
             .then((data) => this.setVideoList(data['videos']));
     }
 
+    handleClick(videoFileName) {
+        this.setState({
+            selectedVideoFile: videoFileName,
+            showVideoPlayer: true,
+        });
+    }
+
     render() {
         return (
             <div>
+                {this.state.showVideoPlayer ? <VideoPlayer videoFileName={this.state.selectedVideoFile} /> : null}
                 <React.Fragment>
                     <ul className="list-group">
                     {this.state.videoFileNames.map(videoFileName => (
                         <li>
-                            {videoFileName}
+                            <button value={videoFileName} onClick={event => this.handleClick(event.target.value)}>
+                                {videoFileName}
+                            </button>
                         </li>
                     ))}
                     </ul>
