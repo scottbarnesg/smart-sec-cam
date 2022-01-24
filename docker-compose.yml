@@ -12,7 +12,7 @@ services:
     build:
       context: backend/
       dockerfile: smart_sec_cam/server/Dockerfile
-    command: python smart_sec_cam/server/server.py --redis-url redis
+    command: python smart_sec_cam/server/server.py --redis-url redis --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
     ports:
@@ -24,7 +24,7 @@ services:
     build:
       context: backend/
       dockerfile: smart_sec_cam/motion/Dockerfile
-    command: python smart_sec_cam/motion/main.py --redis-url redis
+    command: python smart_sec_cam/motion/main.py --redis-url redis --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
     depends_on:

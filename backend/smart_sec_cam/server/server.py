@@ -14,6 +14,8 @@ app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+VIDEO_DIR = "data/videos"
+
 rooms = {}
 
 
@@ -31,14 +33,15 @@ def get_rooms():
 
 @app.route("/videos", methods=["GET"])
 def get_video_list():
-    video_manager = VideoManager()
+    global VIDEO_DIR
+    video_manager = VideoManager(video_dir=VIDEO_DIR)
     return json.dumps({'videos': video_manager.get_video_filenames()}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/video/<file_name>", methods=["GET"])
 def get_video(file_name: str):
-    # TODO: Make the target directory a command-line arg
-    return send_from_directory("data/videos/", file_name, as_attachment=True)
+    global VIDEO_DIR
+    return send_from_directory(VIDEO_DIR, file_name, as_attachment=True)
 
 
 def listen_for_images(redis_url: str, redis_port: int):
@@ -66,10 +69,15 @@ def listen_for_images(redis_url: str, redis_port: int):
 if __name__ == '__main__':
     import argparse
 
+    global VIDEO_DIR
+
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--redis-url', help='Server address to stream images to', default='localhost')
     parser.add_argument('--redis-port', help='Server port to stream images to', default=6379)
+    parser.add_argument('--video-dir', help='Directory in which video files are stored', default="data/videos")
     args = parser.parse_args()
+
+    VIDEO_DIR = args.video_dir
 
     socketio.start_background_task(listen_for_images, args.redis_url, args.redis_port)
     socketio.run(app, host='0.0.0.0')

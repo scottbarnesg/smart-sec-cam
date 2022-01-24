@@ -10,10 +10,12 @@ from smart_sec_cam.video.writer import VideoWriter
 
 
 class MotionDetector:
-    def __init__(self, channel_name: str, motion_threshold: int = 2500, video_duration_seconds: int = 10):
+    def __init__(self, channel_name: str, motion_threshold: int = 2500, video_duration_seconds: int = 10,
+                 video_dir: str = "data/videos"):
         self.channel_name = channel_name
         self.motion_threshold = motion_threshold
         self.video_duration = video_duration_seconds
+        self.video_dir = video_dir
         self.frame_queue = queue.Queue()
         self.detection_thread = threading.Thread(target=self.run, daemon=True)
         self.shutdown = False
@@ -66,7 +68,7 @@ class MotionDetector:
 
     def _record_video(self, first_frames: List):
         start_time = time.monotonic()
-        video_writer = VideoWriter(self.channel_name)
+        video_writer = VideoWriter(self.channel_name, path=self.video_dir)
         for frame in first_frames:
             video_writer.add_frame(frame)
         while not self._done_recording_video(start_time):

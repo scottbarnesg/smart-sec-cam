@@ -2,7 +2,7 @@ from smart_sec_cam.motion.detection import MotionDetector
 from smart_sec_cam.redis import RedisImageReceiver
 
 
-def main(redis_url: str, redis_port: int):
+def main(redis_url: str, redis_port: int, video_dir: str):
     # Fetch list of channels
     # Subscribe to each channel to get frames
     image_receiver = RedisImageReceiver(redis_url, redis_port)
@@ -32,7 +32,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--redis-url', help='Server address to stream images to', default='localhost')
     parser.add_argument('--redis-port', help='Server port to stream images to', default=6379)
+    parser.add_argument('--video-dir', help='Directory in which video files are stored', default="data/videos")
 
     args = parser.parse_args()
 
-    main(args.redis_url, args.redis_port)
+    main(args.redis_url, args.redis_port, args.video_dir)
