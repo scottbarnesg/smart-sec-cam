@@ -10,7 +10,8 @@ class VideoWriter:
 
     def __init__(self, channel: str, path="data/videos/", filetype: str = ".mp4", fps: int = 10,
                  resolution: Tuple[int, int] = (640, 480)):
-        fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+        # fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+        fourcc = 0x00000021
         date = datetime.datetime.now()
         filename = channel + self.FILENAME_DELIM + date.isoformat() + filetype
         full_filepath = os.path.join(path, filename)
