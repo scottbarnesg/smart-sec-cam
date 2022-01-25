@@ -5,7 +5,7 @@ from smart_sec_cam.video.writer import VideoWriter
 
 
 class VideoManager:
-    FILE_TYPES = [".mp4"]
+    FILE_TYPES = [".webm"]
 
     def __init__(self, video_dir="data/videos/"):
         self.video_dir = video_dir
