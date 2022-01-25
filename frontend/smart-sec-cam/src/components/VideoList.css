@@ -1,0 +1,13 @@
+.videoContainer {
+    display:flex; 
+    flex-direction:row;
+
+}
+
+.videoPlayer {
+    width: 75%;
+}
+
+.videoList {
+    width: 25%;
+}

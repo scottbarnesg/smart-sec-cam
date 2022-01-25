@@ -1,5 +1,6 @@
 import React from "react";
 import VideoPlayer from "./VideoPlayer";
+import "./VideoList.css"
 
 
 const SERVER_URL = process.env.REACT_APP_API_URL
@@ -12,7 +13,6 @@ class VideoList extends React.Component {
         this.state = {
             videoFileNames: [],
             selectedVideoFile: null,
-            showVideoPlayer: false,
         };
     }
 
@@ -20,6 +20,7 @@ class VideoList extends React.Component {
         console.log(videoList);
         this.setState({
             videoFileNames: videoList,
+            selectedVideoFile: videoList[0],
         });
         
     }
@@ -34,25 +35,28 @@ class VideoList extends React.Component {
     handleClick(videoFileName) {
         this.setState({
             selectedVideoFile: videoFileName,
-            showVideoPlayer: true,
         });
     }
 
     render() {
         return (
-            <div>
-                {this.state.showVideoPlayer ? <VideoPlayer videoFileName={this.state.selectedVideoFile} /> : null}
-                <React.Fragment>
-                    <ul className="list-group">
-                    {this.state.videoFileNames.map(videoFileName => (
-                        <li>
-                            <button value={videoFileName} onClick={event => this.handleClick(event.target.value)}>
-                                {videoFileName}
-                            </button>
-                        </li>
-                    ))}
-                    </ul>
-                </React.Fragment>
+            <div className="videoContainer">
+                <div className="videoList">
+                    <React.Fragment>
+                        <ul className="list-group">
+                        {this.state.videoFileNames.map(videoFileName => (
+                            <li>
+                                <button value={videoFileName} onClick={event => this.handleClick(event.target.value)}>
+                                    {videoFileName}
+                                </button>
+                            </li>
+                        ))}
+                        </ul>
+                    </React.Fragment>
+                </div>
+                <div className="videoPlayer">
+                    <VideoPlayer videoFileName={this.state.selectedVideoFile} />
+                </div>
             </div>
         );
     }

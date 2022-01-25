@@ -7,6 +7,6 @@ export default function VideoPlayer({videoFileName}) {
     const videoUrl = SERVER_URL + VIDEO_ENDPOINT + videoFileName;
     console.log(videoUrl);
     return (
-        <ReactPlayer url={videoUrl} width="100%" height="100%" controls={true} />
+        <ReactPlayer url={videoUrl} width="100%" height="80%" controls={true} />
     );
 }
