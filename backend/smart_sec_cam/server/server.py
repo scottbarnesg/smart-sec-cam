@@ -69,8 +69,6 @@ def listen_for_images(redis_url: str, redis_port: int):
 if __name__ == '__main__':
     import argparse
 
-    global VIDEO_DIR
-
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--redis-url', help='Server address to stream images to', default='localhost')
     parser.add_argument('--redis-port', help='Server port to stream images to', default=6379)
