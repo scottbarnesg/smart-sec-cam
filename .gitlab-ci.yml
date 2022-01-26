@@ -7,6 +7,12 @@ build:docker:backend:
     - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/backend:${CI_COMMIT_BRANCH}" -f backend/smart_sec_cam/server/Dockerfile backend/
     - docker push "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/backend:${CI_COMMIT_BRANCH}"
 
+build:docker:motion:
+  stage: build
+  script:
+    - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/motion:${CI_COMMIT_BRANCH}" -f backend/smart_sec_cam/motion/Dockerfile backend/
+    - docker push "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/motion:${CI_COMMIT_BRANCH}"
+
 build:docker:frontend:
   stage: build
   script:

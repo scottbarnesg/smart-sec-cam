@@ -22,6 +22,7 @@ A privacy-focused, intelligent security camera system.
 
 NOTE: These instructions assume you are deploying to a raspberry pi running Raspbian OS.
 
+0. Install the `python3-opencv` package and dependencies: `sudo apt-get install python3-opencv libatlas-base-dev`
 1. Clone this repository
 2. Install the package: `cd backend && python3 -m pip install .[streamer]`
 3. Update `--server_url` in `run.sh` to point at the host you deployed the server to.

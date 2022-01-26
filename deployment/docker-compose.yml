@@ -17,7 +17,7 @@ services:
       - redis
     restart: always
   motion-detection:
-    image: "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/backend:master"
+    image: "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/motion:master"
     command: python smart_sec_cam/motion/main.py --redis-url redis --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
