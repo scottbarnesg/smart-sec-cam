@@ -74,6 +74,7 @@ class MotionDetector:
         while not self._done_recording_video(start_time):
             new_frame = self._get_decoded_frame()
             video_writer.add_frame(new_frame)
+        video_writer.write()
         video_writer.release()
 
     def _done_recording_video(self, start_time: float) -> bool:
