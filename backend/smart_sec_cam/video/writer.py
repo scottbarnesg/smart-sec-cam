@@ -37,9 +37,7 @@ class VideoWriter:
         writer = cv2.VideoWriter(self.full_filepath, fourcc, fps, self.resolution)
         for frame in self.frame_buffer:
             writer.write(frame)
-
-    def release(self):
-        self.writer.release()
+        writer.release()
 
     def _calculate_fps(self) -> int:
         elapsed_time = time.monotonic() - self.first_frame_time
