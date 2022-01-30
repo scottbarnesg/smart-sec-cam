@@ -32,8 +32,8 @@ class VideoWriter:
 
     def write(self):
         print("Writing video to: " + self.full_filepath + " ...")
-        fourcc = cv2.VideoWriter_fourcc(*'VP90')
         fps = self._calculate_fps()
+        fourcc = cv2.VideoWriter_fourcc(*'VP90')
         writer = cv2.VideoWriter(self.full_filepath, fourcc, fps, self.resolution)
         for frame in self.frame_buffer:
             writer.write(frame)
