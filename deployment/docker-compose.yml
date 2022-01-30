@@ -1,13 +1,13 @@
 version: '3'
 services:
   redis:
-    image: "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/redis:master"
+    image: "container-registry:5050/scottgbarnes/smart-sec-cam/redis:master"
     ports:
       - "6379:6379"
       - "6380:6380"
     restart: always
   backend:
-    image: "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/backend:master"
+    image: "container-registry:5050/scottgbarnes/smart-sec-cam/backend:master"
     command: python smart_sec_cam/server/server.py --redis-url redis --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
@@ -17,7 +17,7 @@ services:
       - redis
     restart: always
   motion-detection:
-    image: "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/motion:master"
+    image: "container-registry:5050/scottgbarnes/smart-sec-cam/motion:master"
     command: python smart_sec_cam/motion/main.py --redis-url redis --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
@@ -25,7 +25,7 @@ services:
       - redis
     restart: always
   frontend:
-    image: "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/frontend:master"
+    image: "container-registry:5050/scottgbarnes/smart-sec-cam/frontend:master"
     working_dir: /frontend
     ports:
       - "3000:3000"

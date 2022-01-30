@@ -1,26 +1,29 @@
 stages:
   - build
 
+variables:
+  CONTAINER_REGISTRY: "container-registry:5050"
+
 build:docker:backend:
   stage: build
   script:
-    - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/backend:${CI_COMMIT_BRANCH}" -f backend/smart_sec_cam/server/Dockerfile backend/
-    - docker push "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/backend:${CI_COMMIT_BRANCH}"
+    - docker build --pull -t  "${CONTAINER_REGISTRY}/scottgbarnes/smart-sec-cam/backend:${CI_COMMIT_BRANCH}" -f backend/smart_sec_cam/server/Dockerfile backend/
+    - docker push "${CONTAINER_REGISTRY}/scottgbarnes/smart-sec-cam/backend:${CI_COMMIT_BRANCH}"
 
 build:docker:motion:
   stage: build
   script:
-    - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/motion:${CI_COMMIT_BRANCH}" -f backend/smart_sec_cam/motion/Dockerfile backend/
-    - docker push "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/motion:${CI_COMMIT_BRANCH}"
+    - docker build --pull -t  "${CONTAINER_REGISTRY}/scottgbarnes/smart-sec-cam/motion:${CI_COMMIT_BRANCH}" -f backend/smart_sec_cam/motion/Dockerfile backend/
+    - docker push "${CONTAINER_REGISTRY}/scottgbarnes/smart-sec-cam/motion:${CI_COMMIT_BRANCH}"
 
 build:docker:frontend:
   stage: build
   script:
-    - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/frontend:${CI_COMMIT_BRANCH}" frontend/smart-sec-cam
-    - docker push "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/frontend:${CI_COMMIT_BRANCH}"
+    - docker build --pull -t  "${CONTAINER_REGISTRY}/scottgbarnes/smart-sec-cam/frontend:${CI_COMMIT_BRANCH}" frontend/smart-sec-cam
+    - docker push "${CONTAINER_REGISTRY}/scottgbarnes/smart-sec-cam/frontend:${CI_COMMIT_BRANCH}"
 
 build:docker:redis:
   stage: build
   script:
-    - docker build --pull -t  "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/redis:${CI_COMMIT_BRANCH}" backend/smart_sec_cam/redis
-    - docker push "pi4-ubuntu-server:5050/scottgbarnes/smart-sec-cam/redis:${CI_COMMIT_BRANCH}"
+    - docker build --pull -t  "${CONTAINER_REGISTRY}/scottgbarnes/smart-sec-cam/redis:${CI_COMMIT_BRANCH}" backend/smart_sec_cam/redis
+    - docker push "${CONTAINER_REGISTRY}/scottgbarnes/smart-sec-cam/redis:${CI_COMMIT_BRANCH}"
