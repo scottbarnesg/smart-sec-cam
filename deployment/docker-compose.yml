@@ -6,7 +6,7 @@ services:
       - "6379:6379"
       - "6380:6380"
     restart: always
-  backend:
+  server:
     image: "container-registry:5050/scottgbarnes/smart-sec-cam/backend:master"
     command: python smart_sec_cam/server/server.py --redis-url redis --video-dir /backend/data/videos/
     volumes:
