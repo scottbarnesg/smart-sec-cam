@@ -43,7 +43,6 @@ services:
     ports:
       - "8443:8443"
     volumes:
-      - ./frontend/smart-sec-cam/.env:/frontend/.env
       - ./certs/sec-cam-server.cert:/frontend/certs/fullchain.pem
       - ./certs/sec-cam-server.key:/frontend/certs/privkey.pem
     environment:
