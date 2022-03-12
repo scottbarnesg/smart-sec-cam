@@ -14,9 +14,11 @@ services:
       context: backend/
       dockerfile: smart_sec_cam/server/Dockerfile
     image: "container-registry:5050/scottgbarnes/smart-sec-cam/backend:master"
-    command: python smart_sec_cam/server/server.py --redis-url redis --video-dir /backend/data/videos/
+    command: python smart_sec_cam/server/server.py --redis-url sec-cam-server --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
+      - ./certs/sec-cam-server.cert:/backend/certs/fullchain.pem
+      - ./certs/sec-cam-server.key:/backend/certs/privkey.pem
     ports:
       - "5000:5000"
     depends_on:
@@ -40,6 +42,12 @@ services:
     working_dir: /frontend
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend/smart-sec-cam/.env:/frontend/.env
+      - ./certs/sec-cam-server.cert:/frontend/certs/fullchain.pem
+      - ./certs/sec-cam-server.key:/frontend/certs/privkey.pem
+    environment:
+      - WDS_SOCKET_PORT=8443
     restart: always
   nginx-proxy:
     image: nginx:latest

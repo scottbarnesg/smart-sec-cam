@@ -78,4 +78,5 @@ if __name__ == '__main__':
     VIDEO_DIR = args.video_dir
 
     socketio.start_background_task(listen_for_images, args.redis_url, args.redis_port)
-    socketio.run(app, host='0.0.0.0')
+    socketio.run(app, host='0.0.0.0', port="8444", debug=True, certfile='certs/fullchain.pem',
+                 keyfile='certs/privkey.pem')
