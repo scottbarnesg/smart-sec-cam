@@ -30,3 +30,12 @@ services:
     ports:
       - "3000:3000"
     restart: always
+  nginx-proxy:
+    image: nginx:latest
+    ports:
+      - "8443:8443"
+      - "9443:9443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./certs/sec-cam-server.cert:/fullchain.pem
+      - ./certs/sec-cam-server.key:/privkey.pem
