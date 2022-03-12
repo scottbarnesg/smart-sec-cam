@@ -9,12 +9,12 @@ import redis
 class RedisImageReceiver:
     listener_sleep_time = 0.01
 
-    def __init__(self, redis_host: str = "localhost", redis_port: int = 6380):
+    def __init__(self, redis_host: str = "localhost", redis_port: int = 6379):
         self.redis_host = redis_host
         self.redis_port = redis_port
         self.message_queue = queue.Queue()
         self.subscribed_channels = []
-        self.r_conn = redis.StrictRedis(host=self.redis_host, port=self.redis_port, ssl=True, ssl_cert_reqs=None)
+        self.r_conn = redis.StrictRedis(host=self.redis_host, port=self.redis_port)
         self.pubsub = self.r_conn.pubsub()
         self.listener_thread = None
 

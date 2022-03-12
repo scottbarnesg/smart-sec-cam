@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--redis-url', help='Server address to stream images to', default='localhost')
-    parser.add_argument('--redis-port', help='Server port to stream images to', default=6380)
+    parser.add_argument('--redis-port', help='Server port to stream images to', default=6379)
     parser.add_argument('--video-dir', help='Directory in which video files are stored', default="data/videos")
     args = parser.parse_args()
 
