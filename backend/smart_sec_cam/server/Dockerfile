@@ -1,6 +1,7 @@
-FROM python:3.10-slim-buster
+# Server is pined to 3.7 because greenthreads break the redis client's SSL conneciton with later versions
+FROM python:3.7-slim-buster
 
-MAINTAINER Scott Barnes "scott.barnes.g@gmail.com"
+MAINTAINER Scott Barnes "sgbarnes@protonmail.com"
 
 WORKDIR backend/
 COPY . .

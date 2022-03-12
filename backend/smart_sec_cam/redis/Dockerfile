@@ -1,6 +1,6 @@
 FROM redis
 
-MAINTAINER Scott Barnes "scott.barnes.g@gmail.com"
+MAINTAINER Scott Barnes "sgbarnes@protonmail.com"
 
 WORKDIR /
 
