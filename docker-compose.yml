@@ -41,7 +41,7 @@ services:
     image: "container-registry:5050/scottgbarnes/smart-sec-cam/frontend:master"
     working_dir: /frontend
     ports:
-      - "8443:8443"
+      - "3000:3000"
     volumes:
       - ./certs/sec-cam-server.cert:/frontend/certs/fullchain.pem
       - ./certs/sec-cam-server.key:/frontend/certs/privkey.pem
