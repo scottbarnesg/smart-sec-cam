@@ -17,8 +17,7 @@ services:
     command: python smart_sec_cam/server/server.py --redis-url sec-cam-server --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
-      - ./certs/sec-cam-server.cert:/backend/certs/fullchain.pem
-      - ./certs/sec-cam-server.key:/backend/certs/privkey.pem
+      - ./certs/:/backend/certs/
     ports:
       - "8444:8444"
     depends_on:
@@ -43,8 +42,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./certs/sec-cam-server.cert:/frontend/certs/fullchain.pem
-      - ./certs/sec-cam-server.key:/frontend/certs/privkey.pem
+      - ./certs/:/frontend/certs/
     environment:
       - WDS_SOCKET_PORT=8443
     restart: always
