@@ -3,6 +3,7 @@ FROM node:14-alpine
 MAINTAINER Scott Barnes "scott.barnes.g@gmail.com"
 
 WORKDIR /frontend
+RUN mkdir -p certs
 
 COPY . .
 
