@@ -1,12 +1,12 @@
 .imageviewer {
     display: inline-block;
-    min-width: 640px;
+    min-width: 480px;
     width: 50%;
-    max-width: 50%;
+    max-width: 100%;
 }
 
 
 img {
-    min-width: 640px;
+    min-width: 480px;
     width: 100%;
 }
