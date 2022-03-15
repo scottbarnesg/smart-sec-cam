@@ -20,7 +20,6 @@ def main(redis_url: str, redis_port: int, video_dir: str):
     motion_detectors = {channel: MotionDetector(channel, video_dir=video_dir) for channel in active_channels}
     for detector in motion_detectors.values():
         detector.run_in_background()
-    print(motion_detectors)
     while True:
         # Check for new frames from each channel and push to the corresponding MotionDetection instance
         if image_receiver.has_message():
