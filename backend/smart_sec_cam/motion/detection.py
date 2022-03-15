@@ -51,6 +51,9 @@ class MotionDetector:
     def stop(self):
         self.shutdown = True
 
+    def _has_decoded_frame(self) -> bool:
+        return not self.frame_queue.empty()
+
     def _get_decoded_frame(self, greyscale=False):
         new_frame = self.frame_queue.get()
         if greyscale:
@@ -72,8 +75,11 @@ class MotionDetector:
         for frame in first_frames:
             video_writer.add_frame(frame)
         while not self._done_recording_video(start_time):
-            new_frame = self._get_decoded_frame()
-            video_writer.add_frame(new_frame)
+            if self._has_decoded_frame():
+                new_frame = self._get_decoded_frame()
+                video_writer.add_frame(new_frame)
+            else:
+                time.sleep(0.01)
         video_writer.write()
 
     def _done_recording_video(self, start_time: float) -> bool:
