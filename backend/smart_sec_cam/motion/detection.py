@@ -10,7 +10,7 @@ from smart_sec_cam.video.writer import VideoWriter
 
 
 class MotionDetector:
-    def __init__(self, channel_name: str, motion_threshold: int = 5000, video_duration_seconds: int = 10,
+    def __init__(self, channel_name: str, motion_threshold: int = 10000, video_duration_seconds: int = 10,
                  video_dir: str = "data/videos"):
         self.channel_name = channel_name
         self.motion_threshold = motion_threshold
