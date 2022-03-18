@@ -1,6 +1,6 @@
 import ReactPlayer from 'react-player'
 
-const SERVER_URL = process.env.REACT_APP_API_URL
+const SERVER_URL = "https://localhost:8444"
 const VIDEO_ENDPOINT = "/video/"
 
 export default function VideoPlayer({videoFileName}) {

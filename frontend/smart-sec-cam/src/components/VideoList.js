@@ -3,7 +3,7 @@ import VideoPlayer from "./VideoPlayer";
 import "./VideoList.css"
 
 
-const SERVER_URL = process.env.REACT_APP_API_URL
+const SERVER_URL = "https://localhost:8444"
 const VIDEOS_ENDPOINT = "/videos"
 
 class VideoList extends React.Component {

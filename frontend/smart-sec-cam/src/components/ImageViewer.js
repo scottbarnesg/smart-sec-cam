@@ -2,7 +2,7 @@ import React from "react";
 import io from "socket.io-client";
 import "./ImageViewer.css";
 
-const SERVER_URL = process.env.REACT_APP_API_URL
+const SERVER_URL = "https://localhost:8444"
 let socket = io(SERVER_URL)
 
 class ImageViewer extends React.Component {

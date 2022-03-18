@@ -14,7 +14,7 @@ services:
     build:
       context: backend/
       dockerfile: smart_sec_cam/server/Dockerfile
-    command: python smart_sec_cam/server/server.py --redis-url redis --video-dir /backend/data/videos/
+    command: python smart_sec_cam/server/server.py --redis-url sec-cam-server --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
       - ./certs/:/backend/certs/
@@ -39,11 +39,13 @@ services:
     build:
       context: frontend/smart-sec-cam
     working_dir: /frontend
+    entrypoint: ./docker-entrypoint.sh      
     ports:
       - "3000:3000"
     volumes:
       - ./certs/:/frontend/certs/
     environment:
+      - API_URL=${API_URL}
       - WDS_SOCKET_PORT=8443
     restart: always
 
