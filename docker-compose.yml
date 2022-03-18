@@ -14,7 +14,7 @@ services:
     build:
       context: backend/
       dockerfile: smart_sec_cam/server/Dockerfile
-    command: python smart_sec_cam/server/server.py --redis-url sec-cam-server --video-dir /backend/data/videos/
+    command: python smart_sec_cam/server/server.py --redis-url redis --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
       - ./certs/:/backend/certs/
