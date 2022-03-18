@@ -13,9 +13,8 @@ A privacy-focused, intelligent security camera system.
 
 #### Docker:
 1. Clone this repository
-2. Update the value of `REACT_APP_API_URL` in `frontend/smart-sec-cam/.env` to match the hostname of the server's host.
-3. Generate SSL certificates: `./create-certs.sh`. Alternatively, you pay place your own certs in the `certs` dir
-4. Build and run the docker containers: `docker-compose up -d --build`
+2. Generate SSL certificates: `./create-certs.sh`. Alternatively, you pay place your own certs in the `certs` dir
+3. Build and run the docker containers: `API_URL=<server-hostname:server-port> docker-compose up -d --build`. For example, if the API was running on the host `sec-cam-server` and port 8444, you should use `API_URL=sec-cam-server:8444`
 
 ## Adding a camera
 
