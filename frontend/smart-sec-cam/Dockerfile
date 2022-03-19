@@ -1,14 +1,15 @@
-FROM node:14-alpine
+FROM node:16-alpine
 
 WORKDIR /frontend
 RUN mkdir -p certs
 
 COPY . .
 
-RUN npm install --silent
-RUN npm update
-RUN npm audit fix
 RUN npx browserslist@latest --update-db
+
+RUN npm install
+RUN npm update
+RUN npm audit fix || true
 RUN npm install -g serve
 RUN npm run build
 
