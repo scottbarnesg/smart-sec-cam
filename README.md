@@ -30,6 +30,7 @@ NOTE: These instructions assume you are deploying to a raspberry pi running Rasp
 
 0. Install the `python3-opencv` package and dependencies: `sudo apt-get install python3-opencv libatlas-base-dev`
 1. Clone this repository
-2. Install the package: `cd backend && python3 -m pip install .[streamer]`
+2. Install the package: `cd backend && python3 -m pip install .[streamer]`. If you are using the Raspberry Pi camera
+module, run `cd backend && python3 -m pip install .[streamer,picam]`.
 3. Update `--server_url` in `run.sh` to point at the host you deployed the server to.
 4. In the Web UI, you should see live video from that camera.
