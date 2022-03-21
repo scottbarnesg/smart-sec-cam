@@ -4,17 +4,23 @@ A privacy-focused, intelligent security camera system.
 
 ## Features:
 - Multi-camera support w/ minimal configuration. Supports USB cameras and the Raspberry Pi camera module.
-- Motion detection that automatically saves videos.
+- Motion detection that automatically saves videos and lets you view them in the web app.
 - Encrypted in transit, both from the cameras to the server and the server to your browser.
 - Self-Hosted
 - Free and Open Source
+
+## Example screenshots
+
+![](docs/Live_Video_Example.png)
+![](docs/Replay_Example.png)
 
 ## Setting up the server
 
 #### Docker:
 1. Clone this repository
 2. Generate SSL certificates: `./create-certs.sh`. Alternatively, you pay place your own certs in the `certs` dir
-3. Build and run the docker containers: `API_URL=<server-hostname:server-port> docker-compose up -d --build`. For example, if the API was running on the host `sec-cam-server` and port 8444, you should use `API_URL=sec-cam-server:8444`
+3. Build and run the docker containers: `API_URL=<server-hostname:server-port> docker-compose up -d --build`. 
+For example, if the API was running on the host `sec-cam-server` and port 8444, you should use `API_URL=sec-cam-server:8444`
 
 ## Adding a camera
 
