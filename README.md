@@ -18,7 +18,7 @@ A privacy-focused, intelligent security camera system.
 
 #### Docker:
 1. Clone this repository
-2. Generate SSL certificates: `./create-certs.sh`. Alternatively, you pay place your own certs in the `certs` dir
+2. Generate SSL certificates: `./create-certs.sh`. Alternatively, you may place your own certs in the `certs` dir
 3. Build and run the docker containers: `API_URL=<server-hostname:server-port> docker-compose up -d --build`. 
 For example, if the API was running on the host `sec-cam-server` and port 8444, you should use `API_URL=sec-cam-server:8444`
 
