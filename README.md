@@ -38,10 +38,10 @@ UI via an API. The server can be a standalone host, or can run on one of your ca
 Example 1: A standalone server, with the hostname `sec-cam-server.local`, and 2 cameras, with hostnames `camera1.local` and 
 `camera2.local`.
 1. On `sec-cam-server.local`, follow the instructions in "Setting up the server". Replace `<server-hostname:server-port>` with 
-`sec-cam-server.local:8444`.
+`sec-cam-server.local:8443`.
 2. On each camera, follow the instructions in "Adding a camera". In Step 3, `run.sh` should be updated to contain 
 `--server_url sec-cam-server.local`.
-3. The web UI with camera feeds will be available at `https://sec-cam-server.local:3000`
+3. The web UI with camera feeds will be available at `https://sec-cam-server.local:8443`
 
 Example 2: 2 cameras  with hostnames `camera1.local` and `camera2.local`, with the "server" running `camera1.local`
 1. On `camera1.local`, follow the steps to install the server.
@@ -49,7 +49,7 @@ Example 2: 2 cameras  with hostnames `camera1.local` and `camera2.local`, with t
 `--server_url localhost`.
 3. On `camera2.local`, follow the steps to install the in "Adding a camera". In Step 3, `run.sh` should be updated to contain 
 `--server_url camera1.local`.
-4. The web UI with camera feeds will be available at `https://camera1.local:3000`
+4. The web UI with camera feeds will be available at `https://camera1.local:8443`
 
 ### Setting up the server
 
@@ -58,8 +58,9 @@ Example 2: 2 cameras  with hostnames `camera1.local` and `camera2.local`, with t
 1. Clone this repository
 2. Generate SSL certificates: `./create-certs.sh`. Alternatively, you may place your own certs in the `certs` dir
 3. Build and run the docker containers: `API_URL=<server-hostname:server-port> docker-compose up -d --build`. 
-For example, if the API was running on the host `sec-cam-server` and port 8444, you should use `API_URL=sec-cam-server:8444`
-4. You should now be able to view the UI at `https://<server-hostname>:3000`. (NOTE: The web UI will be blank until you add a camera).
+For example, if the server was running on the host `sec-cam-server` and port `8443` (the default), you should use 
+`API_URL=sec-cam-server:8443`.
+4. You should now be able to view the UI at `https://<server-hostname>:8443`. (NOTE: The web UI will be blank until you add a camera).
 
 ### Adding a camera
 
