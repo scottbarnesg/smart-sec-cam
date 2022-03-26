@@ -2,7 +2,7 @@ import json
 import time
 
 import eventlet
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO, join_room
 
@@ -10,7 +10,7 @@ from smart_sec_cam.redis import RedisImageReceiver
 from smart_sec_cam.video.manager import VideoManager
 
 eventlet.monkey_patch()
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='/backend/build', template_folder='/backend/build')
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -23,6 +23,11 @@ rooms = {}
 def on_join(data):
     room = data['room']
     join_room(room)
+
+
+@app.route("/")
+def hello():
+    return render_template("index.html")
 
 
 @app.route("/rooms", methods=["GET"])

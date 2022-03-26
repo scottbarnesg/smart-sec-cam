@@ -12,14 +12,16 @@ services:
   server:
     image: "container-registry:5050/scottgbarnes/smart-sec-cam/backend:master"
     build:
-      context: backend/
-      dockerfile: smart_sec_cam/server/Dockerfile
-    command: python smart_sec_cam/server/server.py --redis-url redis --video-dir /backend/data/videos/
+      context: .
+      dockerfile: backend/smart_sec_cam/server/Dockerfile
+    entrypoint: /backend/smart_sec_cam/server/docker-entrypoint.sh
     volumes:
       - ./data/videos/:/backend/data/videos/
       - ./certs/:/backend/certs/
+    environment:
+      - API_URL=${API_URL}
     ports:
-      - "8444:8444"
+      - "8443:8444"
     depends_on:
       - redis
     restart: always
@@ -34,18 +36,3 @@ services:
     depends_on:
       - redis
     restart: always
-  frontend:
-    image: "container-registry:5050/scottgbarnes/smart-sec-cam/frontend:master"
-    build:
-      context: frontend/smart-sec-cam
-    working_dir: /frontend
-    entrypoint: ./docker-entrypoint.sh      
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./certs/:/frontend/certs/
-    environment:
-      - API_URL=${API_URL}
-      - WDS_SOCKET_PORT=8443
-    restart: always
-
