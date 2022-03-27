@@ -6,7 +6,7 @@ import './App.css';
 
 import io from "socket.io-client";
 
-const SERVER_URL = "https://localhost:8444"
+const SERVER_URL = "https://localhost:8443"
 const ROOMS_ENDPOINT = "/rooms"
 let socket = io(SERVER_URL)
 

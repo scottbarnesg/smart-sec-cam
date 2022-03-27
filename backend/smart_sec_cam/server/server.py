@@ -2,7 +2,7 @@ import json
 import time
 
 import eventlet
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO, join_room
 
@@ -10,7 +10,7 @@ from smart_sec_cam.redis import RedisImageReceiver
 from smart_sec_cam.video.manager import VideoManager
 
 eventlet.monkey_patch()
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='/backend/build', template_folder='/backend/build')
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -25,13 +25,19 @@ def on_join(data):
     join_room(room)
 
 
+@app.route('/videos', defaults={'path': 'videos'})
+@app.route('/', defaults={'path': ''})
+def serve_react_ui(path):
+    return render_template("index.html")
+
+
 @app.route("/rooms", methods=["GET"])
 def get_rooms():
     global rooms
     return json.dumps({'rooms': rooms}), 200, {'ContentType': 'application/json'}
 
 
-@app.route("/videos", methods=["GET"])
+@app.route("/video-list", methods=["GET"])
 def get_video_list():
     global VIDEO_DIR
     video_manager = VideoManager(video_dir=VIDEO_DIR)
@@ -78,5 +84,5 @@ if __name__ == '__main__':
     VIDEO_DIR = args.video_dir
 
     socketio.start_background_task(listen_for_images, args.redis_url, args.redis_port)
-    socketio.run(app, host='0.0.0.0', port="8444", debug=True, certfile='certs/sec-cam-server.cert',
+    socketio.run(app, host='0.0.0.0', port="8443", debug=True, certfile='certs/sec-cam-server.cert',
                  keyfile='certs/sec-cam-server.key')

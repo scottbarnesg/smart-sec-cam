@@ -1,7 +1,6 @@
 .videoContainer {
     display:flex; 
     flex-direction:row;
-
 }
 
 .videoPlayer {
@@ -10,4 +9,8 @@
 
 .videoList {
     width: 25%;
+}
+
+.NavBar {
+    width: 100%;
 }
