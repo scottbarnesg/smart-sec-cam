@@ -30,7 +30,7 @@ services:
     build:
       context: backend/
       dockerfile: smart_sec_cam/motion/Dockerfile
-    command: python smart_sec_cam/motion/main.py --redis-url redis --video-dir /backend/data/videos/
+    command: python smart_sec_cam/motion/main.py --redis-url redis --video-dir /backend/data/videos/ --motion-threshold 10000
     volumes:
       - ./data/videos/:/backend/data/videos/
     depends_on:
