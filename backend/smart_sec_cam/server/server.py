@@ -27,7 +27,7 @@ def on_join(data):
 
 @app.route('/videos', defaults={'path': 'videos'})
 @app.route('/', defaults={'path': ''})
-def hello(path):
+def serve_react_ui(path):
     return render_template("index.html")
 
 

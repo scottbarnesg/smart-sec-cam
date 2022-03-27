@@ -14,7 +14,7 @@ A privacy-focused, intelligent security camera system.
 #### Multiple live video feeds on a single UI:
 ![](docs/Live_Video_Example.png)
 
-#### Replay of recorded vidoes triggered by motion detection:
+#### Replay of recorded videos triggered by motion detection:
 ![](docs/Replay_Example.png)
 
 ## Setup
