@@ -4,6 +4,7 @@ import time
 from typing import Tuple
 
 import cv2
+import ffmpeg
 
 
 class VideoWriter:
@@ -33,11 +34,19 @@ class VideoWriter:
     def write(self):
         print("Writing video to: " + self.full_filepath + " ...")
         fps = self._calculate_fps()
-        fourcc = cv2.VideoWriter_fourcc('H','2','6','4')
-        writer = cv2.VideoWriter(self.full_filepath, fourcc, fps, self.resolution)
+        ffpmeg_process = (
+            ffmpeg
+                .input('pipe:',
+                       format='rawvideo',
+                       pix_fmt='rgb24',
+                       framerate=fps,
+                       s='{}x{}'.format(self.resolution[0], self.resolution[1]))
+                .output(self.full_filepath)
+                .overwrite_output()
+                .run_async(pipe_stdin=True)
+        )
         for frame in self.frame_buffer:
-            writer.write(frame)
-        writer.release()
+            ffpmeg_process.stdin.write(frame)
 
     def _calculate_fps(self) -> int:
         elapsed_time = time.monotonic() - self.first_frame_time
