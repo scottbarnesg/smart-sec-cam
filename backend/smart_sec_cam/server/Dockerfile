@@ -23,6 +23,10 @@ COPY backend/ .
 
 COPY --from=build-static /frontend/build/ /backend/build
 
+# Install FFMPEG
+RUN apt update && apt -y upgrade && apt install -y ffmpeg
+
+# Install python package
 RUN python -m pip install --upgrade pip
 RUN python -m pip install .[server]
 
