@@ -42,7 +42,6 @@ class VideoWriter:
                        framerate=fps,
                        s='{}x{}'.format(self.resolution[0], self.resolution[1]))
                 .output(self.full_filepath)
-                .overwrite_output()
                 .run_async(pipe_stdin=True)
         )
         for frame in self.frame_buffer:
