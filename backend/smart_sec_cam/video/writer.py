@@ -9,7 +9,7 @@ import cv2
 class VideoWriter:
     FILENAME_DELIM = "__"
 
-    def __init__(self, channel: str, path="data/videos/", filetype: str = ".webm",
+    def __init__(self, channel: str, path="data/videos/", filetype: str = ".mp4",
                  resolution: Tuple[int, int] = (640, 480)):
         date = datetime.datetime.now()
         filename = channel + self.FILENAME_DELIM + date.isoformat() + filetype
@@ -33,7 +33,7 @@ class VideoWriter:
     def write(self):
         print("Writing video to: " + self.full_filepath + " ...")
         fps = self._calculate_fps()
-        fourcc = cv2.VideoWriter_fourcc(*'VP90')
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
         writer = cv2.VideoWriter(self.full_filepath, fourcc, fps, self.resolution)
         for frame in self.frame_buffer:
             writer.write(frame)

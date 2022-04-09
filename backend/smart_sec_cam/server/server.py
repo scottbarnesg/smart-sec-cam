@@ -47,7 +47,7 @@ def get_video_list():
 @app.route("/video/<file_name>", methods=["GET"])
 def get_video(file_name: str):
     global VIDEO_DIR
-    return send_from_directory(VIDEO_DIR, file_name, as_attachment=True, mimetype='video/webm')  # mimetype='video/mp4')
+    return send_from_directory(VIDEO_DIR, file_name, as_attachment=True, mimetype='video/mp4')
 
 
 def listen_for_images(redis_url: str, redis_port: int):
