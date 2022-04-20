@@ -1,4 +1,6 @@
 import React from "react";
+import { isIOS, isMacOs } from 'react-device-detect' 
+
 import VideoPlayer from "./VideoPlayer";
 import NavBar from "./NavBar";
 import "./VideoList.css"
@@ -28,7 +30,13 @@ class VideoList extends React.Component {
 
     componentDidMount() {
         // Get room list
-        fetch(SERVER_URL + VIDEOS_ENDPOINT)
+        let videoFormat = "webm";
+        if (isIOS || isMacOs) {
+            videoFormat = "mp4"
+        }
+        const requestUrl = SERVER_URL + VIDEOS_ENDPOINT + "?video-format=" + videoFormat;
+        console.log(requestUrl);
+        fetch(requestUrl)
             .then((resp) => resp.json())
             .then((data) => this.setVideoList(data['videos']));
     }

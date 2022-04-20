@@ -6,18 +6,21 @@ from smart_sec_cam.video.writer import VideoWriter
 
 
 class VideoManager:
-    FILE_TYPES = [".webm"]
+    VIDEO_FORMATS = {
+        "webm": ".webm",
+        "mp4": ".mp4"
+    }
 
     def __init__(self, video_dir="data/videos/"):
         self.video_dir = video_dir
 
-    def get_video_filenames(self) -> List[str]:
-        file_names = [filename for filename in self._get_all_filenames() if self._is_video_file(filename)]
+    def get_video_filenames(self, video_format: str = "webm") -> List[str]:
+        file_names = [filename for filename in self._get_all_filenames() if self._is_video_file(filename, video_format)]
         # Get video timestamps from the filename
         datetimes_to_filenames = {}
         for file_name in file_names:
             try:
-                name = self._remove_file_type(file_name)
+                name = self._remove_file_type(file_name, self.VIDEO_FORMATS.get(video_format))
             except ValueError:
                 continue
             channel, timestamp_iso = name.split(VideoWriter.FILENAME_DELIM)
@@ -28,8 +31,8 @@ class VideoManager:
         datetimes.sort(reverse=True)
         return [datetimes_to_filenames[key] for key in datetimes]
 
-    def get_video_filenames_by_date(self) -> Dict[str, List[str]]:
-        all_filenames = [filename for filename in self._get_all_filenames() if self._is_video_file(filename)]
+    def get_video_filenames_by_date(self, video_format: str = "webm") -> Dict[str, List[str]]:
+        all_filenames = [filename for filename in self._get_all_filenames() if self._is_video_file(filename, video_format)]
         filenames_by_date = {}
         for filename in all_filenames:
             try:
@@ -46,11 +49,12 @@ class VideoManager:
     def _get_all_filenames(self) -> List[str]:
         return os.listdir(self.video_dir)
 
-    def _is_video_file(self, filename: str) -> bool:
-        return any(file_type in filename for file_type in self.FILE_TYPES)
+    @staticmethod
+    def _is_video_file(filename: str, file_type: str) -> bool:
+        return file_type in filename
 
-    def _remove_file_type(self, filename: str) -> str:
-        for file_type in self.FILE_TYPES:
-            if file_type in filename:
-                return filename.replace(file_type, "")
+    @staticmethod
+    def _remove_file_type(filename: str, file_type: str) -> str:
+        if file_type in filename:
+            return filename.replace(file_type, "")
         raise ValueError("File is not a supported file type")
