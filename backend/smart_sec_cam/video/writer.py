@@ -12,7 +12,7 @@ class VideoWriter:
     def __init__(self, channel: str, path="data/videos/",
                  resolution: Tuple[int, int] = (640, 480)):
         date = datetime.datetime.now()
-        filename = channel + self.FILENAME_DELIM + date.isoformat()
+        filename = channel + self.FILENAME_DELIM + date.strftime("%Y-%m-%d_%H:%M:%S")
         self.full_filepath = os.path.join(path, filename)
         self._make_target_dir(path)
         self.resolution = resolution
