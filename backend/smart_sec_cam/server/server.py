@@ -2,7 +2,7 @@ import json
 import time
 
 import eventlet
-from flask import Flask, send_from_directory, render_template
+from flask import Flask, send_from_directory, render_template, request
 from flask_cors import CORS
 from flask_socketio import SocketIO, join_room
 
@@ -39,15 +39,23 @@ def get_rooms():
 
 @app.route("/video-list", methods=["GET"])
 def get_video_list():
+    video_type = request.args.get("video-format")  # "webm" or "mp4"
     global VIDEO_DIR
     video_manager = VideoManager(video_dir=VIDEO_DIR)
-    return json.dumps({'videos': video_manager.get_video_filenames()}), 200, {'ContentType': 'application/json'}
+    return json.dumps({'videos': video_manager.get_video_filenames(video_type)}), 200, {
+        'ContentType': 'application/json'}
 
 
 @app.route("/video/<file_name>", methods=["GET"])
 def get_video(file_name: str):
     global VIDEO_DIR
-    return send_from_directory(VIDEO_DIR, file_name, as_attachment=True, mimetype='video/webm')  # mimetype='video/mp4')
+    if "webm" in file_name:
+        mime_type = 'video/webm'
+    elif "mp4" in file_name:
+        mime_type = 'video/mp4'
+    else:
+        return json.dumps({'status': "ERROR"}), 404, {'ContentType': 'application/json'}
+    return send_from_directory(VIDEO_DIR, file_name, as_attachment=True, mimetype=mime_type)
 
 
 def listen_for_images(redis_url: str, redis_port: int):
