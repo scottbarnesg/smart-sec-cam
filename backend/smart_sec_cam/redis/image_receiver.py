@@ -42,14 +42,11 @@ class RedisImageReceiver:
         return self.message_queue.get()
 
     def start_listener_thread(self):
-        # self.listener_thread = self.pubsub.run_in_thread(self.listener_sleep_time)
         listener_thread = threading.Thread(target=self._listen_for_messages)
         listener_thread.start()
 
     def _subscribe(self):
-        # print({channel: self._redis_message_handler for channel in self.subscribed_channels})
-        # self.pubsub.subscribe(**{channel: self._redis_message_handler for channel in self.subscribed_channels})
-        self.pubsub.subscribe(self.subscribed_channels)
+        self.pubsub.subscribe(", ".join(self.subscribed_channels))
 
     def _redis_message_handler(self, message: any):
         self.message_queue.put(message)
