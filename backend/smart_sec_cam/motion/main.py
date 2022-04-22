@@ -32,13 +32,12 @@ def main(redis_url: str, redis_port: int, video_dir: str, motion_threshold: int)
             time.sleep(SLEEP_TIME)
         # Periodically check for updated channel list in background thread
         if time.monotonic() - last_channel_check_time > CHANNEL_LIST_INTERVAL:
-            print("Checking for new channels...")
             active_channels = image_receiver.get_all_channels()
             # Check for new channels
             new_channels = []
             for channel in active_channels:
                 if channel not in motion_detectors.keys():
-                    print(f"Adding channel: {channel}")
+                    print(f"Detected new channel: {channel}")
                     new_channels.append(channel)
                     motion_detectors[channel] = MotionDetector(channel, video_dir=video_dir)
             # Check for removed channels

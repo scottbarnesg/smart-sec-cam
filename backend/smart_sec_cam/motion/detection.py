@@ -66,7 +66,6 @@ class MotionDetector:
         Performs background subtraction on the frames.
         Returns a boolean indicating if the difference exceeds the motion threshold
         """
-        print(np.sum(cv2.subtract(new_frame, old_frame).flatten())/255.0)
         return np.sum(cv2.subtract(new_frame, old_frame).flatten())/255.0 > self.motion_threshold
 
     def _record_video(self, first_frames: List):
