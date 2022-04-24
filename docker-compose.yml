@@ -33,6 +33,8 @@ services:
     command: python smart_sec_cam/motion/main.py --redis-url redis --video-dir /backend/data/videos/ --motion-threshold 10000
     volumes:
       - ./data/videos/:/backend/data/videos/
+    environment:
+      - PYTHONUNBUFFERED=1
     depends_on:
       - redis
     restart: always
