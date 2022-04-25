@@ -1,5 +1,5 @@
 import React from "react";
-import { isIOS, isMacOs } from 'react-device-detect' 
+import { isIOS } from 'react-device-detect' 
 
 import VideoPlayer from "./VideoPlayer";
 import NavBar from "./NavBar";
@@ -31,7 +31,7 @@ class VideoList extends React.Component {
     componentDidMount() {
         // Get room list
         let videoFormat = "webm";
-        if (isIOS || isMacOs) {
+        if (isIOS) {
             videoFormat = "mp4"
         }
         const requestUrl = SERVER_URL + VIDEOS_ENDPOINT + "?video-format=" + videoFormat;
