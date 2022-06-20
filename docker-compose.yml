@@ -38,3 +38,7 @@ services:
     depends_on:
       - redis
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 2G
