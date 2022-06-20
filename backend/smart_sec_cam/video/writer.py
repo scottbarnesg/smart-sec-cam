@@ -11,9 +11,10 @@ class VideoWriter:
 
     def __init__(self, channel: str, path="data/videos/",
                  resolution: Tuple[int, int] = (640, 480)):
-        date = datetime.datetime.now()
-        filename = channel + self.FILENAME_DELIM + date.strftime("%Y-%m-%d_%H:%M:%S")
-        self.full_filepath = os.path.join(path, filename)
+        self.channel = channel
+        self.video_dir = path
+        self.full_filepath = None
+        self._generate_file_name()
         self._make_target_dir(path)
         self.resolution = resolution
         self.frame_buffer = []
@@ -31,6 +32,7 @@ class VideoWriter:
         self.frame_buffer.append(resized_frame)
 
     def write(self):
+        self._generate_file_name()
         print("Writing video to: " + self.full_filepath + " ...")
         fps = self._calculate_fps()
         # Write to .webm
@@ -57,6 +59,11 @@ class VideoWriter:
 
     def _clear_frame_buffer(self):
         self.frame_buffer = []
+
+    def _generate_file_name(self):
+        date = datetime.datetime.now()
+        filename = self.channel + self.FILENAME_DELIM + date.strftime("%Y-%m-%d_%H:%M:%S")
+        self.full_filepath = os.path.join(self.video_dir, filename)
 
     def _calculate_fps(self) -> int:
         elapsed_time = time.monotonic() - self.first_frame_time
