@@ -40,6 +40,7 @@ class VideoWriter:
         for frame in self.frame_buffer:
             writer.write(frame)
         writer.release()
+        del writer
         # Write to .mp4
         mp4_file = self.full_filepath + ".mp4"
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")
@@ -47,6 +48,15 @@ class VideoWriter:
         for frame in self.frame_buffer:
             writer.write(frame)
         writer.release()
+        del writer
+        self._clear_frame_buffer()
+
+    def reset(self):
+        self._clear_frame_buffer()
+        self.first_frame_time = time.monotonic()
+
+    def _clear_frame_buffer(self):
+        self.frame_buffer = []
 
     def _calculate_fps(self) -> int:
         elapsed_time = time.monotonic() - self.first_frame_time

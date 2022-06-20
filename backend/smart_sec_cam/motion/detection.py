@@ -16,6 +16,7 @@ class MotionDetector:
         self.motion_threshold = motion_threshold
         self.video_duration = video_duration_seconds
         self.video_dir = video_dir
+        self.video_writer = VideoWriter(self.channel_name, path=self.video_dir)
         self.frame_queue = queue.Queue()
         self.detection_thread = threading.Thread(target=self.run, daemon=True)
         self.shutdown = False
@@ -70,16 +71,16 @@ class MotionDetector:
 
     def _record_video(self, first_frames: List):
         start_time = time.monotonic()
-        video_writer = VideoWriter(self.channel_name, path=self.video_dir)
+        self.video_writer.reset()
         for frame in first_frames:
-            video_writer.add_frame(frame)
+            self.video_writer.add_frame(frame)
         while not self._done_recording_video(start_time):
             if self._has_decoded_frame():
                 new_frame = self._get_decoded_frame()
-                video_writer.add_frame(new_frame)
+                self.video_writer.add_frame(new_frame)
             else:
                 time.sleep(0.01)
-        video_writer.write()
+        self.video_writer.write()
 
     def _done_recording_video(self, start_time: float) -> bool:
         return time.monotonic() - start_time > self.video_duration
