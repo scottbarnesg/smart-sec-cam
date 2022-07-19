@@ -1,11 +1,14 @@
 import json
 import time
+from functools import wraps
 
 import eventlet
 from flask import Flask, send_from_directory, render_template, request
 from flask_cors import CORS
 from flask_socketio import SocketIO, join_room
 
+from smart_sec_cam.auth.authentication import Authenticator
+from smart_sec_cam.auth.database import AuthDatabase
 from smart_sec_cam.redis import RedisImageReceiver
 from smart_sec_cam.video.manager import VideoManager
 
@@ -19,16 +22,67 @@ VIDEO_DIR = "data/videos"
 rooms = {}
 
 
+def require_token(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        # jwt is passed in the request header
+        if 'x-access-token' in request.headers:
+            token = request.headers['x-access-token']
+        # return 401 if token is not passed
+        if not token:
+            return json.dumps({'status': "ERROR", "error": "Missing token"}), 401, {'ContentType': 'application/json'}
+
+        auth_db = AuthDatabase()
+        authenticator = Authenticator(auth_db)
+        if not authenticator.validate_token(token):
+            return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
+        # returns the current logged in users contex to the routes
+        return f(*args, **kwargs)
+    return decorated
+
+
+"""
+SocketIO endpoints
+"""
+
+
 @socketio.on('join')
 def on_join(data):
     room = data['room']
     join_room(room)
 
 
+"""
+UI Endpoints
+"""
+
+
 @app.route('/videos', defaults={'path': 'videos'})
 @app.route('/', defaults={'path': ''})
 def serve_react_ui(path):
     return render_template("index.html")
+
+
+"""
+API Endpoints
+"""
+
+
+@app.route("/auth", methods=["POST"])
+def authenticate():
+    # Get data from request body
+    username = request.json.get("username")
+    password = request.json.get("password")
+    # Set up authenticator
+    auth_db = AuthDatabase()
+    authenticator = Authenticator(auth_db)
+    # Authenticate request
+    token = authenticator.authenticate(username, password)
+    if not token:
+        return json.dumps({'status': "ERROR", "error": "Incorrect username or password"}), 401, \
+               {'ContentType': 'application/json'}
+    return json.dumps({'token': token}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/rooms", methods=["GET"])

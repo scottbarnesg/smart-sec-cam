@@ -18,6 +18,7 @@ services:
     volumes:
       - ./data/videos/:/backend/data/videos/
       - ./certs/:/backend/certs/
+      - ./data/smart-sec-cam.db:/backend/data/smart-sec-cam.db
     environment:
       - API_URL=${API_URL}
     ports:
