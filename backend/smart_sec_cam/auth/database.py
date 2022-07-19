@@ -35,7 +35,7 @@ class AuthDatabase:
         result = cursor.execute(f"SELECT * FROM {self.USER_TABLE} WHERE id = ?", (user_id,))
         if result:
             user_data = result.fetchone()
-            return User(user_data[0], user_data[1], user_data[2], user_data[3])
+            return User(user_data[1], user_data[0], user_data[2], user_data[3])
 
     def get_user_by_username(self, username: str) -> User:
         cursor = self.conn.cursor()

@@ -8,7 +8,7 @@ from smart_sec_cam.auth.database import AuthDatabase
 
 class Authenticator:
     JWT_SECRET_LENGTH = 24
-    TOKEN_DURATION_MINUTES = 60
+    TOKEN_DURATION_HOURS = 1
 
     def __init__(self, auth_db: AuthDatabase):
         self.auth_db = auth_db
@@ -26,18 +26,18 @@ class Authenticator:
         return self._generate_token(existing_user.user_id)
 
     def validate_token(self, token: str) -> bool:
-        payload = jwt.decode(token, self.secret, algorithms='HS256')
-        return payload['exp'] < datetime.datetime.utcnow().timestamp()
+        payload = jwt.decode(token, self.secret, algorithms=['HS256'])
+        return payload['exp'] > datetime.datetime.utcnow().timestamp()
 
     def refresh_token(self, token: str) -> str:
         if self.validate_token(token):
-            payload = jwt.decode(token, self.secret, algorithms='HS256')
+            payload = jwt.decode(token, self.secret, algorithms=['HS256'])
             return self._generate_token(payload['sub'])
 
     def _generate_token(self, user_id: str) -> str:
         payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=self.TOKEN_DURATION_MINUTES),
-            'iat': datetime.datetime.utcnow(),
+            'exp': (datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=self.TOKEN_DURATION_HOURS)).timestamp(),
+            'iat': datetime.datetime.utcnow().timestamp(),
             'sub': user_id
         }
         return jwt.encode(payload, self.secret, algorithm='HS256')

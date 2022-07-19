@@ -3,6 +3,7 @@ import time
 from functools import wraps
 
 import eventlet
+import jwt.exceptions
 from flask import Flask, send_from_directory, render_template, request
 from flask_cors import CORS
 from flask_socketio import SocketIO, join_room
@@ -12,13 +13,16 @@ from smart_sec_cam.auth.database import AuthDatabase
 from smart_sec_cam.redis import RedisImageReceiver
 from smart_sec_cam.video.manager import VideoManager
 
+# SocketIO & CORS
 eventlet.monkey_patch()
 app = Flask(__name__, static_url_path='', static_folder='/backend/build', template_folder='/backend/build')
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
-
+# Authentication
+auth_db = AuthDatabase()
+authenticator = Authenticator(auth_db)
+# Application-specific data
 VIDEO_DIR = "data/videos"
-
 rooms = {}
 
 
@@ -32,10 +36,10 @@ def require_token(f):
         # return 401 if token is not passed
         if not token:
             return json.dumps({'status': "ERROR", "error": "Missing token"}), 401, {'ContentType': 'application/json'}
-
-        auth_db = AuthDatabase()
-        authenticator = Authenticator(auth_db)
-        if not authenticator.validate_token(token):
+        try:
+            if not authenticator.validate_token(token):
+                return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
+        except jwt.exceptions.DecodeError:
             return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
         # returns the current logged in users contex to the routes
         return f(*args, **kwargs)
@@ -74,9 +78,6 @@ def authenticate():
     # Get data from request body
     username = request.json.get("username")
     password = request.json.get("password")
-    # Set up authenticator
-    auth_db = AuthDatabase()
-    authenticator = Authenticator(auth_db)
     # Authenticate request
     token = authenticator.authenticate(username, password)
     if not token:
@@ -86,12 +87,14 @@ def authenticate():
 
 
 @app.route("/rooms", methods=["GET"])
+@require_token
 def get_rooms():
     global rooms
     return json.dumps({'rooms': rooms}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/video-list", methods=["GET"])
+@require_token
 def get_video_list():
     video_type = request.args.get("video-format")  # "webm" or "mp4"
     global VIDEO_DIR
@@ -101,6 +104,7 @@ def get_video_list():
 
 
 @app.route("/video/<file_name>", methods=["GET"])
+@require_token
 def get_video(file_name: str):
     global VIDEO_DIR
     if "webm" in file_name:
