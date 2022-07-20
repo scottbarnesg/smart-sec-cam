@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import ImageViewer from "./components/ImageViewer";
 import NavBar from "./components/NavBar";
 
@@ -10,54 +12,55 @@ const SERVER_URL = "https://localhost:8443"
 const ROOMS_ENDPOINT = "/rooms"
 let socket = io(SERVER_URL)
 
-class App extends React.Component {
-    constructor(props){
-        super(props)
-        this.state = {
-            rooms: [],
-            components: [],
+export default function App() {
+    const [rooms, setRooms] = React.useState([]);
+    const [components, setComponents] = React.useState([]);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        // Check that we got a token from the props. If not, navigate to the login screen
+        console.log(location);
+        if (location.state == null || location.state.token == null) {
+            navigate('/', { });
+            return;
         }
-    }
-
-    updateRooms(rooms) {
-        this.setState({
-            rooms: Object.keys(rooms),
-        }, () => {
-            this.renderComponents();
-            console.log(this.state.rooms);
-        })
-    }
-
-    renderComponents() {
-        let components = []
-        for (const room_name of this.state.rooms) {
-            components.push(<ImageViewer key={room_name} room={room_name}/>)
-        }
-        this.setState({
-           components: components,
-        });
-    }
-
-
-    componentDidMount(){
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'x-access-token': location.state.token },
+        };
+        console.log(requestOptions);
         // Get room list
-        fetch(SERVER_URL + ROOMS_ENDPOINT)
+        fetch(SERVER_URL + ROOMS_ENDPOINT, requestOptions)
             .then((resp) => resp.json())
-            .then((data) => this.updateRooms(data['rooms']))
+            .then((data) => {console.log(data); updateRooms(data['rooms'])})
         // Configure socket
         socket.on('rooms', (payload) => {
-            this.updateRooms(payload.rooms);
+            updateRooms(payload.rooms);
         });
+    }, []);
+
+    React.useEffect(() => {
+        renderComponents();
+    }, [rooms])
+
+    function updateRooms(rooms) {
+        setRooms(Object.keys(rooms))
+        // renderComponents();
     }
 
-    render() {
-        return (
-            <div className="App">
-                <NavBar />
-                {this.state.components}
-            </div>
-        );
+    function renderComponents() {
+        let components = []
+        for (const room_name of rooms) {
+            components.push(<ImageViewer key={room_name} room={room_name}/>)
+        }
+        setComponents(components);
     }
-}
 
-export default App;
+    return (
+        <div className="App">
+            <NavBar />
+            {components}
+        </div>
+    );
+};

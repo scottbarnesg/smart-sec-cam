@@ -63,6 +63,7 @@ UI Endpoints
 
 
 @app.route('/videos', defaults={'path': 'videos'})
+@app.route('/stream', defaults={'path': 'stream'})
 @app.route('/', defaults={'path': ''})
 def serve_react_ui(path):
     return render_template("index.html")
@@ -79,11 +80,16 @@ def authenticate():
     username = request.json.get("username")
     password = request.json.get("password")
     # Authenticate request
-    token = authenticator.authenticate(username, password)
+    try:
+        token = authenticator.authenticate(username, password)
+    except ValueError:
+        return json.dumps({'statu'
+                           's': "ERROR", "error": "Incorrect username or password"}), 401, \
+               {'ContentType': 'application/json'}
     if not token:
         return json.dumps({'status': "ERROR", "error": "Incorrect username or password"}), 401, \
                {'ContentType': 'application/json'}
-    return json.dumps({'token': token}), 200, {'ContentType': 'application/json'}
+    return json.dumps({'status': "OK", 'token': token}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/rooms", methods=["GET"])

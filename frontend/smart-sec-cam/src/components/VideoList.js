@@ -9,26 +9,12 @@ import "./VideoList.css"
 const SERVER_URL = "https://localhost:8443"
 const VIDEOS_ENDPOINT = "/video-list"
 
-class VideoList extends React.Component {
-    
-    constructor(props){
-        super(props);
-        this.state = {
-            videoFileNames: [],
-            selectedVideoFile: null,
-        };
-    }
+export default function VideoList(props) {
+    const [videoFileNames, setVideoFileNames] = React.useState([]);
+    const [selectedVideoFile, setSelectedVideoFile] = React.useState(null);
 
-    setVideoList(videoList) {
-        console.log(videoList);
-        this.setState({
-            videoFileNames: videoList,
-            selectedVideoFile: videoList[0],
-        });
-        
-    }
-
-    componentDidMount() {
+    React.useEffect(() => {
+        // TODO: Check that we got a token from the props. If not, navigate to the login screen
         // Get room list
         let videoFormat = "webm";
         if (isIOS) {
@@ -38,41 +24,42 @@ class VideoList extends React.Component {
         console.log(requestUrl);
         fetch(requestUrl)
             .then((resp) => resp.json())
-            .then((data) => this.setVideoList(data['videos']));
+            .then((data) => setVideoList(data['videos']));
+    }, []);
+
+    function setVideoList(videoList) {
+        console.log(videoList);
+        setVideoFileNames(videoList);
+        setSelectedVideoFile(videoList[0]);
+        
     }
 
-    handleClick(videoFileName) {
-        this.setState({
-            selectedVideoFile: videoFileName,
-        });
+    function handleClick(videoFileName) {
+        setSelectedVideoFile(videoFileName);
     }
 
-    render() {
-        return (
-            <div>
-                <NavBar />
-                <div className="videoContainer">
-                    <div className="videoList">
-                        <React.Fragment>
-                            <ul className="list-group">
-                            {this.state.videoFileNames.map(videoFileName => (
-                                <li>
-                                    <button value={videoFileName} onClick={event => this.handleClick(event.target.value)}>
-                                        {videoFileName}
-                                    </button>
-                                </li>
-                            ))}
-                            </ul>
-                        </React.Fragment>
-                    </div>
-                    <div className="videoPlayer">
-                        <VideoPlayer videoFileName={this.state.selectedVideoFile} />
-                    </div>
+    return (
+        <div>
+            <NavBar />
+            <div className="videoContainer">
+                <div className="videoList">
+                    <React.Fragment>
+                        <ul className="list-group">
+                        {videoFileNames.map(videoFileName => (
+                            <li>
+                                <button value={videoFileName} onClick={event => handleClick(event.target.value)}>
+                                    {videoFileName}
+                                </button>
+                            </li>
+                        ))}
+                        </ul>
+                    </React.Fragment>
+                </div>
+                <div className="videoPlayer">
+                    <VideoPlayer videoFileName={selectedVideoFile} />
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 
 };
-
-export default VideoList;

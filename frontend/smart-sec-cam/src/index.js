@@ -8,16 +8,18 @@ import {
 import './index.css';
 import App from './App';
 import VideoList from "./components/VideoList";
+import Login from "./components/Login";
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route path="/" element={<Login />} />
+        <Route path="stream" element={<App />} />
         <Route path="videos" element={<VideoList />} />
       </Routes>
-  </BrowserRouter>,
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
