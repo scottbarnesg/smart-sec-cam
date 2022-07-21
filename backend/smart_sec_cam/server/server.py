@@ -1,7 +1,6 @@
 import json
 import time
 from functools import wraps
-from typing import Tuple, Dict
 
 import eventlet
 import jwt.exceptions
@@ -90,6 +89,29 @@ def authenticate():
         return json.dumps({'status': "ERROR", "error": "Incorrect username or password"}), 401, \
                {'ContentType': 'application/json'}
     return json.dumps({'status': "OK", 'token': token}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/validate-token", methods=["POST"])
+def validate_token():
+    token = request.json.get("token")
+    try:
+        if not authenticator.validate_token(token):
+            return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
+    except jwt.exceptions.InvalidSignatureError:
+        return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
+    return json.dumps({'status': "OK"}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/refresh-token", methods=["POST"])
+def refresh_token():
+    token = request.json.get("token")
+    try:
+        if not authenticator.validate_token(token):
+            return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
+    except jwt.exceptions.InvalidSignatureError:
+        return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
+    new_token = authenticator.refresh_token(token)
+    return json.dumps({'status': "OK", "token": new_token}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/rooms", methods=["GET"])
