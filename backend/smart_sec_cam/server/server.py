@@ -1,6 +1,7 @@
 import json
 import time
 from functools import wraps
+from typing import Tuple, Dict
 
 import eventlet
 import jwt.exceptions
@@ -83,8 +84,7 @@ def authenticate():
     try:
         token = authenticator.authenticate(username, password)
     except ValueError:
-        return json.dumps({'statu'
-                           's': "ERROR", "error": "Incorrect username or password"}), 401, \
+        return json.dumps({'status': "ERROR", "error": "Incorrect username or password"}), 401, \
                {'ContentType': 'application/json'}
     if not token:
         return json.dumps({'status': "ERROR", "error": "Incorrect username or password"}), 401, \
@@ -110,8 +110,17 @@ def get_video_list():
 
 
 @app.route("/video/<file_name>", methods=["GET"])
-@require_token
 def get_video(file_name: str):
+    # Validate token
+    token = request.args.get("token")
+    if not token:
+        return json.dumps({'status': "ERROR", "error": "Missing token"}), 401, {'ContentType': 'application/json'}
+    try:
+        if not authenticator.validate_token(token):
+            return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
+    except jwt.exceptions.DecodeError:
+        return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
+    # Return video
     global VIDEO_DIR
     if "webm" in file_name:
         mime_type = 'video/webm'

@@ -9,6 +9,7 @@
 
 .videoList {
     width: 25%;
+    max-height: 99vh;
 }
 
 .NavBar {

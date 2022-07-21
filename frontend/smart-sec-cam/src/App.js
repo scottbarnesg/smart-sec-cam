@@ -20,7 +20,6 @@ export default function App() {
 
     React.useEffect(() => {
         // Check that we got a token from the props. If not, navigate to the login screen
-        console.log(location);
         if (location.state == null || location.state.token == null) {
             navigate('/', { });
             return;
@@ -29,7 +28,6 @@ export default function App() {
             method: 'GET',
             headers: { 'x-access-token': location.state.token },
         };
-        console.log(requestOptions);
         // Get room list
         fetch(SERVER_URL + ROOMS_ENDPOINT, requestOptions)
             .then((resp) => resp.json())
@@ -59,7 +57,7 @@ export default function App() {
 
     return (
         <div className="App">
-            <NavBar />
+            <NavBar token={location.state.token}/>
             {components}
         </div>
     );

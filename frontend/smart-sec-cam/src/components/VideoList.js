@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import { isIOS } from 'react-device-detect' 
 
 import VideoPlayer from "./VideoPlayer";
@@ -12,17 +14,27 @@ const VIDEOS_ENDPOINT = "/video-list"
 export default function VideoList(props) {
     const [videoFileNames, setVideoFileNames] = React.useState([]);
     const [selectedVideoFile, setSelectedVideoFile] = React.useState(null);
+    const location = useLocation();
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         // TODO: Check that we got a token from the props. If not, navigate to the login screen
+        console.log(location);
+        if (location.state == null || location.state.token == null) {
+            navigate('/', { });
+            return;
+        }
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'x-access-token': location.state.token },
+        };
         // Get room list
         let videoFormat = "webm";
         if (isIOS) {
             videoFormat = "mp4"
         }
         const requestUrl = SERVER_URL + VIDEOS_ENDPOINT + "?video-format=" + videoFormat;
-        console.log(requestUrl);
-        fetch(requestUrl)
+        fetch(requestUrl. requestOptions)
             .then((resp) => resp.json())
             .then((data) => setVideoList(data['videos']));
     }, []);
@@ -56,7 +68,7 @@ export default function VideoList(props) {
                     </React.Fragment>
                 </div>
                 <div className="videoPlayer">
-                    <VideoPlayer videoFileName={selectedVideoFile} />
+                    <VideoPlayer videoFileName={selectedVideoFile} token={location.state.token} />
                 </div>
             </div>
         </div>
