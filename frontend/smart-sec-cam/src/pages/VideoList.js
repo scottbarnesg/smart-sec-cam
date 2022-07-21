@@ -3,8 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import { isIOS } from 'react-device-detect' 
 
-import VideoPlayer from "./VideoPlayer";
-import NavBar from "./NavBar";
+import VideoPlayer from "../components/VideoPlayer";
+import NavBar from "../components/NavBar";
 import "./VideoList.css"
 
 
@@ -18,7 +18,8 @@ export default function VideoList(props) {
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        // TODO: Check that we got a token from the props. If not, navigate to the login screen
+        // TODO: Check cookie for valid token
+        // Check that we got a token from the props. If not, navigate to the login screen
         console.log(location);
         if (location.state == null || location.state.token == null) {
             navigate('/', { });

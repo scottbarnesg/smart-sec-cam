@@ -51,3 +51,8 @@ class AuthDatabase:
             user = User(row[0], row[1], row[2], row[3])
             users.append(user)
         return users
+
+    def get_num_users(self) -> int:
+        cursor = self.conn.cursor()
+        result = cursor.execute(f"SELECT Count() FROM {self.USER_TABLE}")
+        return result.fetchone()[0]

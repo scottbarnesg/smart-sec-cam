@@ -7,8 +7,9 @@ import {
 } from "react-router-dom";
 import './index.css';
 import App from './App';
-import VideoList from "./components/VideoList";
-import Login from "./components/Login";
+import VideoList from "./pages/VideoList";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
@@ -18,6 +19,7 @@ ReactDOM.render(
         <Route path="/" element={<Login />} />
         <Route path="stream" element={<App />} />
         <Route path="videos" element={<VideoList />} />
+        <Route path="register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

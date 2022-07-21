@@ -19,6 +19,7 @@ export default function App() {
     const navigate = useNavigate();
 
     React.useEffect(() => {
+        // TODO: Check cookie for valid token
         // Check that we got a token from the props. If not, navigate to the login screen
         if (location.state == null || location.state.token == null) {
             navigate('/', { });

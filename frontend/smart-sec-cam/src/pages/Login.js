@@ -8,25 +8,42 @@ import Typography from '@mui/material/Typography';
 import {useCookies} from 'react-cookie';
 
 const SERVER_URL = "https://localhost:8443"
-const AUTH_ENDPOINT = "/auth"
-const VALIDATE_TOKEN_ENDPOINT = "/validate-token"
-const REFRESH_TOKEN_ENDPOINT = "/refresh-token"
+const AUTH_ENDPOINT = "/api/auth/login"
+const NUM_USERS_ENDPOINT = "/api/auth/num-users"
+const VALIDATE_TOKEN_ENDPOINT = "/api/token/validate"
+const REFRESH_TOKEN_ENDPOINT = "/api/token/refresh"
 
 
 export default function Login(props) {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [token, setToken] = React.useState("");
+    const [hasRegisteredUser, setHasRegisteredUser] = React.useState(null);
     const [hasValidToken, setHasValidToken] = React.useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        // Check cookies to see if we have a JWT. If so, auto-redirect to video stream page
-        const cachedToken = cookies.token;
-        // Validate token
-        validateToken(cachedToken);
+        checkServerHasUser();
     }, []);
+
+
+    React.useEffect(() => {
+        if (hasRegisteredUser == null) {
+            return;
+        }
+        if (hasRegisteredUser) {
+            console.log("Verified users, checking token...");
+            // Check cookies to see if we have a JWT. If so, auto-redirect to video stream page
+            const cachedToken = cookies.token;
+            // Validate token
+            validateToken(cachedToken);
+        }
+        else {
+            console.log("Navigating to registration page");
+            navigate('/register');
+        }
+    }, [hasRegisteredUser]);
 
     React.useEffect(() => {
         const cachedToken = cookies.token;
@@ -42,6 +59,18 @@ export default function Login(props) {
             navigate('/stream', {state: { token: token }});
         }
     }, [token])
+
+    function checkServerHasUser() {
+        const url = SERVER_URL + NUM_USERS_ENDPOINT;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => handleCheckServerHasUserResponse(data)); 
+    }
+
+    function handleCheckServerHasUserResponse(data) {
+        setHasRegisteredUser(data["users"] > 0)
+        console.log("Server has registered users: " + String(data["users"] > 0))
+    }
 
     function validateToken(token) {
         const url = SERVER_URL + VALIDATE_TOKEN_ENDPOINT;
@@ -98,7 +127,7 @@ export default function Login(props) {
     }
 
     function handleLogin() {
-        // Submit username and password to /auth
+        // Submit username and password
         const url = SERVER_URL + AUTH_ENDPOINT;
         const payload = {
             "username": username,
@@ -111,10 +140,10 @@ export default function Login(props) {
         };
         fetch(url, requestOptions)
         .then(response => response.json())
-        .then(data => handleAuthResponse(data));        
+        .then(data => handleLoginResponse(data));        
     };
 
-    function handleAuthResponse(data) {
+    function handleLoginResponse(data) {
         if (data.status === "OK") {
             setToken(data["token"]);
             // Write token to cookie
@@ -168,6 +197,7 @@ export default function Login(props) {
                 <TextField
                     required
                     id="password"
+                    type="password"
                     label="Password"
                     value={password}
                     onChange={event => setPassword(event.target.value)}

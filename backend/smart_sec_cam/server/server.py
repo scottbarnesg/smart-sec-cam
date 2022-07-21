@@ -10,6 +10,7 @@ from flask_socketio import SocketIO, join_room
 
 from smart_sec_cam.auth.authentication import Authenticator
 from smart_sec_cam.auth.database import AuthDatabase
+from smart_sec_cam.auth.models import User
 from smart_sec_cam.redis import RedisImageReceiver
 from smart_sec_cam.video.manager import VideoManager
 
@@ -33,13 +34,14 @@ def require_token(f):
         # jwt is passed in the request header
         if 'x-access-token' in request.headers:
             token = request.headers['x-access-token']
+        client_ip_addr = request.remote_addr
         # return 401 if token is not passed
         if not token:
             return json.dumps({'status': "ERROR", "error": "Missing token"}), 401, {'ContentType': 'application/json'}
         try:
-            if not authenticator.validate_token(token):
+            if not authenticator.validate_token(token, client_ip_addr):
                 return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
-        except jwt.exceptions.DecodeError:
+        except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError):
             return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
         # returns the current logged in users contex to the routes
         return f(*args, **kwargs)
@@ -64,6 +66,7 @@ UI Endpoints
 
 @app.route('/videos', defaults={'path': 'videos'})
 @app.route('/stream', defaults={'path': 'stream'})
+@app.route('/register', defaults={'path': 'stream'})
 @app.route('/', defaults={'path': ''})
 def serve_react_ui(path):
     return render_template("index.html")
@@ -74,14 +77,15 @@ API Endpoints
 """
 
 
-@app.route("/auth", methods=["POST"])
+@app.route("/api/auth/login", methods=["POST"])
 def authenticate():
     # Get data from request body
     username = request.json.get("username")
     password = request.json.get("password")
+    client_ip_addr = request.remote_addr
     # Authenticate request
     try:
-        token = authenticator.authenticate(username, password)
+        token = authenticator.authenticate(username, password, client_ip_addr)
     except ValueError:
         return json.dumps({'status': "ERROR", "error": "Incorrect username or password"}), 401, \
                {'ContentType': 'application/json'}
@@ -91,26 +95,47 @@ def authenticate():
     return json.dumps({'status': "OK", 'token': token}), 200, {'ContentType': 'application/json'}
 
 
-@app.route("/validate-token", methods=["POST"])
+@app.route("/api/auth/num-users", methods=["GET"])
+def get_num_users():
+    return json.dumps({'status': "OK", 'users': auth_db.get_num_users()}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/api/auth/register", methods=["POST"])
+def register():
+    username = request.json.get("username")
+    password = request.json.get("password")
+    new_user = User(username)
+    new_user.generate_id()
+    new_user.set_password(password)
+    try:
+        auth_db.add_user(new_user)
+    except ValueError:
+        return json.dumps({'status': "ERROR", "error": "Username already taken"}), 404, {'ContentType': 'application/json'}
+    return json.dumps({'status': "OK"}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/api/token/validate", methods=["POST"])
 def validate_token():
     token = request.json.get("token")
+    client_ip_addr = request.remote_addr
     try:
-        if not authenticator.validate_token(token):
+        if not authenticator.validate_token(token, client_ip_addr):
             return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
-    except jwt.exceptions.InvalidSignatureError:
+    except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError):
         return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
     return json.dumps({'status': "OK"}), 200, {'ContentType': 'application/json'}
 
 
-@app.route("/refresh-token", methods=["POST"])
+@app.route("/api/token/refresh", methods=["POST"])
 def refresh_token():
     token = request.json.get("token")
+    client_ip_addr = request.remote_addr
     try:
-        if not authenticator.validate_token(token):
+        if not authenticator.validate_token(token, client_ip_addr):
             return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
-    except jwt.exceptions.InvalidSignatureError:
+    except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError):
         return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
-    new_token = authenticator.refresh_token(token)
+    new_token = authenticator.refresh_token(token, client_ip_addr)
     return json.dumps({'status': "OK", "token": new_token}), 200, {'ContentType': 'application/json'}
 
 
@@ -127,18 +152,18 @@ def get_video_list():
     video_type = request.args.get("video-format")  # "webm" or "mp4"
     global VIDEO_DIR
     video_manager = VideoManager(video_dir=VIDEO_DIR)
-    return json.dumps({'videos': video_manager.get_video_filenames(video_type)}), 200, {
-        'ContentType': 'application/json'}
+    return json.dumps({'videos': video_manager.get_video_filenames(video_type)}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/video/<file_name>", methods=["GET"])
 def get_video(file_name: str):
     # Validate token
     token = request.args.get("token")
+    client_ip_addr = request.remote_addr
     if not token:
         return json.dumps({'status': "ERROR", "error": "Missing token"}), 401, {'ContentType': 'application/json'}
     try:
-        if not authenticator.validate_token(token):
+        if not authenticator.validate_token(token, client_ip_addr):
             return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
     except jwt.exceptions.DecodeError:
         return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
