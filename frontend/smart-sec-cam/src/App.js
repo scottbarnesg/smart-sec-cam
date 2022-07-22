@@ -9,7 +9,7 @@ import './App.css';
 import io from "socket.io-client";
 
 const SERVER_URL = "https://localhost:8443"
-const ROOMS_ENDPOINT = "/rooms"
+const ROOMS_ENDPOINT = "/api/video/rooms"
 let socket = io(SERVER_URL)
 
 export default function App() {

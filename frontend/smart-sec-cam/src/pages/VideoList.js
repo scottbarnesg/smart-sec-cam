@@ -9,7 +9,7 @@ import "./VideoList.css"
 
 
 const SERVER_URL = "https://localhost:8443"
-const VIDEOS_ENDPOINT = "/video-list"
+const VIDEOS_ENDPOINT = "/api/video/video-list"
 
 export default function VideoList(props) {
     const [videoFileNames, setVideoFileNames] = React.useState([]);

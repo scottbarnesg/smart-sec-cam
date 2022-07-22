@@ -25,6 +25,7 @@ authenticator = Authenticator(auth_db)
 # Application-specific data
 VIDEO_DIR = "data/videos"
 rooms = {}
+ENABLE_USER_REGISTRATION = False
 
 
 def require_token(f):
@@ -52,7 +53,7 @@ def require_token(f):
 SocketIO endpoints
 """
 
-
+# TODO: Implement authentication for socketio
 @socketio.on('join')
 def on_join(data):
     room = data['room']
@@ -102,6 +103,11 @@ def get_num_users():
 
 @app.route("/api/auth/register", methods=["POST"])
 def register():
+    # Check if any users exist and if user registration is enabled
+    if auth_db.get_num_users() > 0 and not ENABLE_USER_REGISTRATION:
+        return json.dumps({'status': "ERROR", 'error': "User registration is disabled"}), 403, \
+               {'ContentType': 'application/json'}
+    # Create new user
     username = request.json.get("username")
     password = request.json.get("password")
     new_user = User(username)
@@ -139,14 +145,14 @@ def refresh_token():
     return json.dumps({'status': "OK", "token": new_token}), 200, {'ContentType': 'application/json'}
 
 
-@app.route("/rooms", methods=["GET"])
+@app.route("/api/video/rooms", methods=["GET"])
 @require_token
 def get_rooms():
     global rooms
     return json.dumps({'rooms': rooms}), 200, {'ContentType': 'application/json'}
 
 
-@app.route("/video-list", methods=["GET"])
+@app.route("/api/video/video-list", methods=["GET"])
 @require_token
 def get_video_list():
     video_type = request.args.get("video-format")  # "webm" or "mp4"
@@ -155,7 +161,7 @@ def get_video_list():
     return json.dumps({'videos': video_manager.get_video_filenames(video_type)}), 200, {'ContentType': 'application/json'}
 
 
-@app.route("/video/<file_name>", methods=["GET"])
+@app.route("/api/video/<file_name>", methods=["GET"])
 def get_video(file_name: str):
     # Validate token
     token = request.args.get("token")
@@ -204,12 +210,16 @@ if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--redis-url', help='Server address to stream images to', default='localhost')
-    parser.add_argument('--redis-port', help='Server port to stream images to', default=6379)
-    parser.add_argument('--video-dir', help='Directory in which video files are stored', default="data/videos")
+    parser.add_argument('--redis-url', help='Server address to stream images to', type=str, default='localhost')
+    parser.add_argument('--redis-port', help='Server port to stream images to', type=int, default=6379)
+    parser.add_argument('--video-dir', help='Directory in which video files are stored', type=str,
+                        default="data/videos")
+    parser.add_argument('--enable-registration', help='Enable registration of multiple users', default=False,
+                        action='store_true')
     args = parser.parse_args()
 
     VIDEO_DIR = args.video_dir
+    ENABLE_USER_REGISTRATION = args.enable_registration
 
     socketio.start_background_task(listen_for_images, args.redis_url, args.redis_port)
     socketio.run(app, host='0.0.0.0', port="8443", debug=True, certfile='certs/sec-cam-server.cert',
