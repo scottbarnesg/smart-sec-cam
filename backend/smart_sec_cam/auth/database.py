@@ -17,6 +17,7 @@ class AuthDatabase:
             os.makedirs(self.DATABASE_DIR)
         # Connect to the database
         self.conn = sqlite3.connect(os.path.join(self.DATABASE_DIR, self.db_name + self.FILE_TYPE))
+        self.setup()
 
     def setup(self):
         cursor = self.conn.cursor()
