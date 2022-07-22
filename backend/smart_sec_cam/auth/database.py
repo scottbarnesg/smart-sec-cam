@@ -12,6 +12,10 @@ class AuthDatabase:
 
     def __init__(self, db_name: str = "smart-sec-cam"):
         self.db_name = db_name
+        # Create db directory if it doesnt exist
+        if not os.path.exists(self.DATABASE_DIR):
+            os.makedirs(self.DATABASE_DIR)
+        # Connect to the database
         self.conn = sqlite3.connect(os.path.join(self.DATABASE_DIR, self.db_name + self.FILE_TYPE))
 
     def setup(self):
