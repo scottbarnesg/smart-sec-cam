@@ -14,6 +14,7 @@ export default function Register(props) {
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const navigate = useNavigate();
+    console.log("Registration page");
 
     function handleRegistration() {
         // Submit username and password

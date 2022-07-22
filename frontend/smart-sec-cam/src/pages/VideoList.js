@@ -1,7 +1,8 @@
 import React from "react";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { isIOS } from 'react-device-detect' 
+import { useCookies } from 'react-cookie';
 
 import VideoPlayer from "../components/VideoPlayer";
 import NavBar from "../components/NavBar";
@@ -14,20 +15,19 @@ const VIDEOS_ENDPOINT = "/api/video/video-list"
 export default function VideoList(props) {
     const [videoFileNames, setVideoFileNames] = React.useState([]);
     const [selectedVideoFile, setSelectedVideoFile] = React.useState(null);
-    const location = useLocation();
+    const [cookies, setCookie] = useCookies(["token"]);
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        // TODO: Check cookie for valid token
-        // Check that we got a token from the props. If not, navigate to the login screen
-        console.log(location);
-        if (location.state == null || location.state.token == null) {
+        // Check cookie for valid token. If not, navigate to the login screen
+        // TODO: Actually validate token here
+        if (cookies.token == null) {
             navigate('/', { });
             return;
         }
         const requestOptions = {
             method: 'GET',
-            headers: { 'x-access-token': location.state.token },
+            headers: { 'x-access-token': cookies.token },
         };
         // Get room list
         let videoFormat = "webm";
@@ -69,7 +69,7 @@ export default function VideoList(props) {
                     </React.Fragment>
                 </div>
                 <div className="videoPlayer">
-                    <VideoPlayer videoFileName={selectedVideoFile} token={location.state.token} />
+                    <VideoPlayer videoFileName={selectedVideoFile} token={cookies.token} />
                 </div>
             </div>
         </div>

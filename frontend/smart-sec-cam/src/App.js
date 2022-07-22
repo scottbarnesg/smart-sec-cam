@@ -1,5 +1,7 @@
 import React from "react";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+import { useCookies } from 'react-cookie';
 
 import ImageViewer from "./components/ImageViewer";
 import NavBar from "./components/NavBar";
@@ -15,19 +17,19 @@ let socket = io(SERVER_URL)
 export default function App() {
     const [rooms, setRooms] = React.useState([]);
     const [components, setComponents] = React.useState([]);
-    const location = useLocation();
     const navigate = useNavigate();
+    const [cookies, setCookie] = useCookies(["token"]);
 
     React.useEffect(() => {
-        // TODO: Check cookie for valid token
-        // Check that we got a token from the props. If not, navigate to the login screen
-        if (location.state == null || location.state.token == null) {
+        // Check cookie for valid token. If not, navigate to the login screen
+        // TODO: Actually validate token here
+        if (cookies.token == null) {
             navigate('/', { });
             return;
         }
         const requestOptions = {
             method: 'GET',
-            headers: { 'x-access-token': location.state.token },
+            headers: { 'x-access-token': cookies.token },
         };
         // Get room list
         fetch(SERVER_URL + ROOMS_ENDPOINT, requestOptions)
@@ -58,7 +60,7 @@ export default function App() {
 
     return (
         <div className="App">
-            <NavBar token={location.state.token}/>
+            <NavBar token={cookies.token}/>
             {components}
         </div>
     );

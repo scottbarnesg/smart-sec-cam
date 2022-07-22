@@ -66,9 +66,9 @@ UI Endpoints
 """
 
 
+@app.route('/register', defaults={'path': 'register'})
 @app.route('/videos', defaults={'path': 'videos'})
 @app.route('/stream', defaults={'path': 'stream'})
-@app.route('/register', defaults={'path': 'stream'})
 @app.route('/', defaults={'path': ''})
 def serve_react_ui(path):
     return render_template("index.html")

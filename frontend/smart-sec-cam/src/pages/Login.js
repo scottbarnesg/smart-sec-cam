@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import {useCookies} from 'react-cookie';
+import { useCookies } from 'react-cookie';
 
 const SERVER_URL = "https://localhost:8443"
 const AUTH_ENDPOINT = "/api/auth/login"
@@ -20,7 +20,7 @@ export default function Login(props) {
     const [token, setToken] = React.useState("");
     const [hasRegisteredUser, setHasRegisteredUser] = React.useState(null);
     const [hasValidToken, setHasValidToken] = React.useState(false);
-    const [cookies, setCookie, removeCookie] = useCookies(["token"]);
+    const [cookies, setCookie] = useCookies(["token"]);
     const navigate = useNavigate();
 
     React.useEffect(() => {
@@ -33,14 +33,12 @@ export default function Login(props) {
             return;
         }
         if (hasRegisteredUser) {
-            console.log("Verified users, checking token...");
             // Check cookies to see if we have a JWT. If so, auto-redirect to video stream page
             const cachedToken = cookies.token;
             // Validate token
             validateToken(cachedToken);
         }
-        else {
-            console.log("Navigating to registration page");
+        else if (hasRegisteredUser === false) {
             navigate('/register');
         }
     }, [hasRegisteredUser]);
@@ -148,8 +146,8 @@ export default function Login(props) {
             setToken(data["token"]);
             // Write token to cookie
             setCookie("token", data["token"], {path: "/"})
-            // Navigate to App page, with token as prop
-            navigate('/stream', {state: { token: data["token"] }});
+            // Navigate to App page,
+            navigate('/stream');
         }
         else {
             // TODO: Show error message on UI somewhere
