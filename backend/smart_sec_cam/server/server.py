@@ -54,9 +54,18 @@ def require_token(f):
 SocketIO endpoints
 """
 
-# TODO: Implement authentication for socketio
+
 @socketio.on('join')
 def on_join(data):
+    # Validate token
+    token = data['token']
+    client_ip_addr = request.remote_addr
+    try:
+        if not authenticator.validate_token(token, client_ip_addr):
+            return json.dumps({'status': "ERROR", "error": "Invalid token"})
+    except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError):
+        return json.dumps({'status': "ERROR", "error": "Invalid token"})
+    # Join room
     room = data['room']
     join_room(room)
 

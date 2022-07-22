@@ -7,10 +7,11 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useCookies } from 'react-cookie';
 
+import { validateToken } from "../utils/ValidateToken";
+
 const SERVER_URL = "https://localhost:8443"
 const AUTH_ENDPOINT = "/api/auth/login"
 const NUM_USERS_ENDPOINT = "/api/auth/num-users"
-const VALIDATE_TOKEN_ENDPOINT = "/api/token/validate"
 const REFRESH_TOKEN_ENDPOINT = "/api/token/refresh"
 
 
@@ -19,7 +20,7 @@ export default function Login(props) {
     const [password, setPassword] = React.useState("");
     const [token, setToken] = React.useState("");
     const [hasRegisteredUser, setHasRegisteredUser] = React.useState(null);
-    const [hasValidToken, setHasValidToken] = React.useState(false);
+    const [hasValidToken, setHasValidToken] = React.useState(null);
     const [cookies, setCookie] = useCookies(["token"]);
     const navigate = useNavigate();
 
@@ -36,7 +37,7 @@ export default function Login(props) {
             // Check cookies to see if we have a JWT. If so, auto-redirect to video stream page
             const cachedToken = cookies.token;
             // Validate token
-            validateToken(cachedToken);
+            validateToken(cachedToken, setHasValidToken);
         }
         else if (hasRegisteredUser === false) {
             navigate('/register');
@@ -67,34 +68,6 @@ export default function Login(props) {
 
     function handleCheckServerHasUserResponse(data) {
         setHasRegisteredUser(data["users"] > 0)
-        console.log("Server has registered users: " + String(data["users"] > 0))
-    }
-
-    function validateToken(token) {
-        const url = SERVER_URL + VALIDATE_TOKEN_ENDPOINT;
-        const payload = {
-            "token": token
-        }
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        };
-        fetch(url, requestOptions)
-            .then(response => response.json())
-            .then(data => handleValidateTokenResponse(data)); 
-    }
-
-    function handleValidateTokenResponse(data){
-        if (data.status === "OK") {
-            console.log("Token validation successful")
-            setHasValidToken(true);
-        }
-        else {
-            // TODO: Show error message on UI somewhere
-            console.log("Token validation failed");
-            setHasValidToken(false);
-        }
     }
 
     function refreshToken(token) {

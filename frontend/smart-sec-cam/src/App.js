@@ -6,6 +6,8 @@ import { useCookies } from 'react-cookie';
 import ImageViewer from "./components/ImageViewer";
 import NavBar from "./components/NavBar";
 
+import { validateToken } from "./utils/ValidateToken";
+
 import './App.css';
 
 import io from "socket.io-client";
@@ -17,37 +19,46 @@ let socket = io(SERVER_URL)
 export default function App() {
     const [rooms, setRooms] = React.useState([]);
     const [components, setComponents] = React.useState([]);
-    const navigate = useNavigate();
+    const [hasValidToken, setHasValidToken] = React.useState(null);
     const [cookies, setCookie] = useCookies(["token"]);
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         // Check cookie for valid token. If not, navigate to the login screen
-        // TODO: Actually validate token here
         if (cookies.token == null) {
             navigate('/', { });
-            return;
         }
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'x-access-token': cookies.token },
-        };
-        // Get room list
-        fetch(SERVER_URL + ROOMS_ENDPOINT, requestOptions)
-            .then((resp) => resp.json())
-            .then((data) => {console.log(data); updateRooms(data['rooms'])})
-        // Configure socket
-        socket.on('rooms', (payload) => {
-            updateRooms(payload.rooms);
-        });
+        else {
+            validateToken(cookies.token, setHasValidToken);
+        }  
     }, []);
+
+    React.useEffect(() => {
+        if (hasValidToken) {
+            const requestOptions = {
+                method: 'GET',
+                headers: { 'x-access-token': cookies.token },
+            };
+            // Get room list
+            fetch(SERVER_URL + ROOMS_ENDPOINT, requestOptions)
+                .then((resp) => resp.json())
+                .then((data) => {updateRooms(data['rooms'])})
+            // Configure socket
+            socket.on('rooms', (payload) => {
+                updateRooms(payload.rooms);
+            });
+        }
+        else if (hasValidToken === false) {
+            navigate('/', { });
+        }
+    }, [hasValidToken])
 
     React.useEffect(() => {
         renderComponents();
     }, [rooms])
 
     function updateRooms(rooms) {
-        setRooms(Object.keys(rooms))
-        // renderComponents();
+        setRooms(rooms != null ? Object.keys(rooms) : []);
     }
 
     function renderComponents() {

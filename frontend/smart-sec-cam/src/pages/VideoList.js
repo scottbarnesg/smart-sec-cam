@@ -6,6 +6,8 @@ import { useCookies } from 'react-cookie';
 
 import VideoPlayer from "../components/VideoPlayer";
 import NavBar from "../components/NavBar";
+
+import { validateToken } from "../utils/ValidateToken";
 import "./VideoList.css"
 
 
@@ -15,33 +17,42 @@ const VIDEOS_ENDPOINT = "/api/video/video-list"
 export default function VideoList(props) {
     const [videoFileNames, setVideoFileNames] = React.useState([]);
     const [selectedVideoFile, setSelectedVideoFile] = React.useState(null);
+    const [hasValidToken, setHasValidToken] = React.useState(null);
     const [cookies, setCookie] = useCookies(["token"]);
     const navigate = useNavigate();
 
     React.useEffect(() => {
         // Check cookie for valid token. If not, navigate to the login screen
-        // TODO: Actually validate token here
         if (cookies.token == null) {
             navigate('/', { });
-            return;
         }
-        const requestOptions = {
-            method: 'GET',
-            headers: { 'x-access-token': cookies.token },
-        };
-        // Get room list
-        let videoFormat = "webm";
-        if (isIOS) {
-            videoFormat = "mp4"
-        }
-        const requestUrl = SERVER_URL + VIDEOS_ENDPOINT + "?video-format=" + videoFormat;
-        fetch(requestUrl. requestOptions)
-            .then((resp) => resp.json())
-            .then((data) => setVideoList(data['videos']));
+        else {
+            validateToken(cookies.token, setHasValidToken);
+        }  
     }, []);
 
+    React.useEffect(() => {
+        if (hasValidToken) {
+            const requestOptions = {
+                method: 'GET',
+                headers: { 'x-access-token': cookies.token },
+            };
+            // Get room list
+            let videoFormat = "webm";
+            if (isIOS) {
+                videoFormat = "mp4"
+            }
+            const requestUrl = SERVER_URL + VIDEOS_ENDPOINT + "?video-format=" + videoFormat;
+            fetch(requestUrl, requestOptions)
+                .then((resp) => resp.json())
+                .then((data) => setVideoList(data['videos']));
+        }
+        else if (hasValidToken === false) {
+            navigate('/', { });
+        }
+    }, [hasValidToken]);
+
     function setVideoList(videoList) {
-        console.log(videoList);
         setVideoFileNames(videoList);
         setSelectedVideoFile(videoList[0]);
         
