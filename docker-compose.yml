@@ -22,6 +22,7 @@ services:
     environment:
       - API_URL=${API_URL}
       - PYTHONUNBUFFERED=1
+      - ENABLE_REGISTRATION=0
     ports:
       - "8443:8443"
     depends_on:

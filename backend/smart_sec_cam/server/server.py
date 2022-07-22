@@ -1,4 +1,5 @@
 import json
+import os
 import time
 from functools import wraps
 
@@ -214,12 +215,10 @@ if __name__ == '__main__':
     parser.add_argument('--redis-port', help='Server port to stream images to', type=int, default=6379)
     parser.add_argument('--video-dir', help='Directory in which video files are stored', type=str,
                         default="data/videos")
-    parser.add_argument('--enable-registration', help='Enable registration of multiple users', default=False,
-                        action='store_true')
     args = parser.parse_args()
 
     VIDEO_DIR = args.video_dir
-    ENABLE_USER_REGISTRATION = args.enable_registration
+    ENABLE_USER_REGISTRATION = bool(int(os.environ.get("ENABLE_REGISTRATION")))
 
     socketio.start_background_task(listen_for_images, args.redis_url, args.redis_port)
     socketio.run(app, host='0.0.0.0', port="8443", debug=True, certfile='certs/sec-cam-server.cert',
