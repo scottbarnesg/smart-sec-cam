@@ -6,6 +6,7 @@ A privacy-focused, intelligent security camera system.
 - Multi-camera support w/ minimal configuration. Supports USB cameras and the Raspberry Pi camera module.
 - Motion detection that automatically saves videos and lets you view them in the web app.
 - Encrypted in transit, both from the cameras to the server and the server to your browser.
+- Integrated authentication 
 - Self-Hosted
 - Free and Open Source ([GPLv3](LICENSE))
 
@@ -60,7 +61,22 @@ Example 2: 2 cameras  with hostnames `camera1.local` and `camera2.local`, with t
 3. Build and run the docker containers: `API_URL=<server-hostname:server-port> docker-compose up -d --build`. 
 For example, if the server was running on the host `sec-cam-server` and port `8443` (the default), you should use 
 `API_URL=sec-cam-server:8443`.
-4. You should now be able to view the UI at `https://<server-hostname>:8443`. (NOTE: The web UI will be blank until you add a camera).
+4. You should now be able to view the UI at `https://<server-hostname>:8443`.
+5. Until a user is created, you will be automatically redirected to
+
+
+#### Configuration:
+
+##### Adding multiple users:
+
+By default, user registration will be disabled once an initial user is created. To enable registration to add
+additional users, update the environment variable `ENABLE_REGISTRATION` under the `server` service:
+
+```
+- ENABLE_REGISTRATION=1
+```
+
+When you're done adding users, you should re-set this value to `0` and restart the server.
 
 ### Adding a camera
 
