@@ -17,6 +17,10 @@
     max-height: 99vh;
 }
 
+.videoList ul {
+    list-style-type: none;
+}
+
 .NavBar {
     width: 100%;
 }

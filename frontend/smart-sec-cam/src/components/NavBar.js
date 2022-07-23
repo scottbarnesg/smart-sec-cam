@@ -14,8 +14,11 @@ const darkTheme = createTheme({
     palette: {
         mode: 'dark',
         primary: {
-        main: '#1976d2',
+            main: '#2e2e2e',
         },
+        secondary: {
+            main: "#1976d2",
+        }
     },
 });
 
@@ -30,7 +33,7 @@ export default function ButtonAppBar(props) {
         <Box sx={{ flexGrow: 1 }}>
             <ThemeProvider theme={darkTheme}>
                 <AppBar position="static">
-                    <Toolbar variant="dense">
+                    <Toolbar variant="dense" color="primary">
                         <IconButton
                             size="large"
                             edge="start"
@@ -43,7 +46,7 @@ export default function ButtonAppBar(props) {
                         <Typography variant="h6" component="div" align="left" sx={{ flexGrow: 1 }}>
                             Smart Security Camera
                         </Typography>
-                        <Button onClick={goToVideosPage} variant="contained" color="primary">
+                        <Button onClick={goToVideosPage} variant="contained" color="secondary">
                             Videos
                         </Button>
                     </Toolbar>
