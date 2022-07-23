@@ -1,3 +1,8 @@
+.VideoList {
+    background-color: white;
+    height: 100vh;
+}
+
 .videoContainer {
     display:flex; 
     flex-direction:row;

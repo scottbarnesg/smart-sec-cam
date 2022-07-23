@@ -63,7 +63,7 @@ export default function VideoList(props) {
     }
 
     return (
-        <div>
+        <div className="VideoList">
             <NavBar />
             <div className="videoContainer">
                 <div className="videoList">

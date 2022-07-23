@@ -132,7 +132,7 @@ export default function Login(props) {
     }
 
     return (
-        <div>
+        <div className="Login">
             <Box
                 component="form"
                 sx={{

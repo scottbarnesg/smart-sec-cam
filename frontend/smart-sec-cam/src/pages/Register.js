@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-import "./Login.css"
+import "./Register.css"
 
 const SERVER_URL = "https://localhost:8443"
 const REGISTER_ENDPOINT = "/api/auth/register"
@@ -46,7 +46,7 @@ export default function Register(props) {
     }
 
     return (
-        <div>
+        <div className="Register">
             <Box
                 component="form"
                 sx={{
