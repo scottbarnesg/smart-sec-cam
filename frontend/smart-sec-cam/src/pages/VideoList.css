@@ -1,3 +1,8 @@
+.VideoList {
+    background-color: white;
+    height: 100vh;
+}
+
 .videoContainer {
     display:flex; 
     flex-direction:row;
@@ -9,6 +14,11 @@
 
 .videoList {
     width: 25%;
+    max-height: 99vh;
+}
+
+.videoList ul {
+    list-style-type: none;
 }
 
 .NavBar {

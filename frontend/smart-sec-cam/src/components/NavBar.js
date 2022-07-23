@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -13,35 +14,44 @@ const darkTheme = createTheme({
     palette: {
         mode: 'dark',
         primary: {
-        main: '#1976d2',
+            main: '#2e2e2e',
         },
+        secondary: {
+            main: "#1976d2",
+        }
     },
 });
 
-export default function ButtonAppBar() {
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-        <ThemeProvider theme={darkTheme}>
-            <AppBar position="static">
-                <Toolbar variant="dense">
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" component="div" align="left" sx={{ flexGrow: 1 }}>
-                        Smart Security Camera
-                    </Typography>
-                    <Button component={Link} to="/videos" variant="contained" color="primary">
-                        Videos
-                    </Button>
-                </Toolbar>
-            </AppBar>
-        </ThemeProvider>
-    </Box>
-  );
-}
+export default function ButtonAppBar(props) {
+    const navigate = useNavigate();
+
+    function goToVideosPage() {
+        navigate("/videos", {state: { token: props.token }});
+    }    
+
+    return (
+        <Box sx={{ flexGrow: 1 }}>
+            <ThemeProvider theme={darkTheme}>
+                <AppBar position="static">
+                    <Toolbar variant="dense" color="primary">
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            sx={{ mr: 2 }}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Typography variant="h6" component="div" align="left" sx={{ flexGrow: 1 }}>
+                            Smart Security Camera
+                        </Typography>
+                        <Button onClick={goToVideosPage} variant="contained" color="secondary">
+                            Videos
+                        </Button>
+                    </Toolbar>
+                </AppBar>
+            </ThemeProvider>
+        </Box>
+    );
+    }

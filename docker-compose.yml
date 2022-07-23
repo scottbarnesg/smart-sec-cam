@@ -16,10 +16,12 @@ services:
       dockerfile: backend/smart_sec_cam/server/Dockerfile
     entrypoint: /backend/smart_sec_cam/server/docker-entrypoint.sh
     volumes:
-      - ./data/videos/:/backend/data/videos/
+      - ./data/:/backend/data/
       - ./certs/:/backend/certs/
     environment:
       - API_URL=${API_URL}
+      - PYTHONUNBUFFERED=1
+      - ENABLE_REGISTRATION=0
     ports:
       - "8443:8443"
     depends_on:
