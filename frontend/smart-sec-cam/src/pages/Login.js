@@ -9,6 +9,9 @@ import { useCookies } from 'react-cookie';
 
 import { validateToken } from "../utils/ValidateToken";
 
+import "./Login.css"
+
+
 const SERVER_URL = "https://localhost:8443"
 const AUTH_ENDPOINT = "/api/auth/login"
 const NUM_USERS_ENDPOINT = "/api/auth/num-users"
@@ -133,7 +136,7 @@ export default function Login(props) {
             <Box
                 component="form"
                 sx={{
-                    '& > :not(style)': { m: 1, width: '25ch', paddingTop: '30vh' },
+                    '& > :not(style)': { m: 1, width: '25ch', paddingTop: '30vh', paddingBottom: '2vh' },
                 }}
                 noValidate
                 autoComplete="off"
@@ -142,8 +145,8 @@ export default function Login(props) {
                 alignItems="center"
                 flexDirection="column"
             >
-                <Typography variant="h5" align="center" gutterBottom component="div">
-                    Smart Sec Cam Login
+                <Typography variant="h4" align="center" gutterBottom component="div">
+                    Smart Sec Cam
                 </Typography>
             </Box>
             <Box
@@ -157,13 +160,29 @@ export default function Login(props) {
                 justifyContent="center"
                 alignItems="center"
                 flexDirection="column"
-            >
+            >  
+                <Typography variant="h5" align="center" gutterBottom component="div">
+                    Login
+                </Typography>
                 <TextField
                     required
                     id="username"
                     label="Username"
                     value={username}
                     onChange={event => setUsername(event.target.value)}
+                    sx={{
+                        '& .MuiInputBase-input': {
+                            color: 'white',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: 'white',
+                            }
+                        },
+                        "& .MuiInputLabel-root": {
+                            color: "white"
+                        }
+                    }}
                 />
                 <TextField
                     required
@@ -172,6 +191,19 @@ export default function Login(props) {
                     label="Password"
                     value={password}
                     onChange={event => setPassword(event.target.value)}
+                    sx={{
+                        '& .MuiInputBase-input': {
+                            color: 'white',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: 'white',
+                            }
+                        },
+                        "& .MuiInputLabel-root": {
+                            color: "white"
+                        }
+                    }}
                 />
                 <Button variant="contained" onClick={() => handleLogin()}>Login</Button>
             </Box>

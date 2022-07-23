@@ -6,6 +6,8 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
+import "./Login.css"
+
 const SERVER_URL = "https://localhost:8443"
 const REGISTER_ENDPOINT = "/api/auth/register"
 
@@ -48,7 +50,7 @@ export default function Register(props) {
             <Box
                 component="form"
                 sx={{
-                    '& > :not(style)': { m: 1, width: '25ch', paddingTop: '30vh' },
+                    '& > :not(style)': { m: 1, width: '25ch', paddingTop: '30vh', paddingBottom: '2vh' },
                 }}
                 noValidate
                 autoComplete="off"
@@ -57,8 +59,8 @@ export default function Register(props) {
                 alignItems="center"
                 flexDirection="column"
             >
-                <Typography variant="h5" align="center" gutterBottom component="div">
-                    Smart Sec Cam Registration
+                <Typography variant="h4" align="center" gutterBottom component="div">
+                    Smart Sec Cam
                 </Typography>
             </Box>
             <Box
@@ -73,12 +75,28 @@ export default function Register(props) {
                 alignItems="center"
                 flexDirection="column"
             >
+                <Typography variant="h5" align="center" gutterBottom component="div">
+                    Register
+                </Typography>
                 <TextField
                     required
                     id="username"
                     label="Username"
                     value={username}
                     onChange={event => setUsername(event.target.value)}
+                    sx={{
+                        '& .MuiInputBase-input': {
+                            color: 'white',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: 'white',
+                            }
+                        },
+                        "& .MuiInputLabel-root": {
+                            color: "white"
+                        }
+                    }}
                 />
                 <TextField
                     required
@@ -87,6 +105,19 @@ export default function Register(props) {
                     label="Password"
                     value={password}
                     onChange={event => setPassword(event.target.value)}
+                    sx={{
+                        '& .MuiInputBase-input': {
+                            color: 'white',
+                        },
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: 'white',
+                            }
+                        },
+                        "& .MuiInputLabel-root": {
+                            color: "white"
+                        }
+                    }}
                 />
                 <Button variant="contained" onClick={() => handleRegistration()}>Register</Button>
             </Box>
