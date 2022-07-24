@@ -50,7 +50,7 @@ export default function Register(props) {
             <Box
                 component="form"
                 sx={{
-                    '& > :not(style)': { m: 1, width: '25ch', paddingTop: '30vh', paddingBottom: '2vh' },
+                    '& > :not(style)': { m: 1, width: '100%', paddingTop: '30vh', paddingBottom: '2vh' },
                 }}
                 noValidate
                 autoComplete="off"
@@ -66,7 +66,7 @@ export default function Register(props) {
             <Box
                 component="form"
                 sx={{
-                    '& > :not(style)': { m: 1, width: '25ch', padding: '10' },
+                    '& > :not(style)': { m: 1, width: '100%', padding: '10' },
                 }}
                 noValidate
                 autoComplete="off"
@@ -85,6 +85,8 @@ export default function Register(props) {
                     value={username}
                     onChange={event => setUsername(event.target.value)}
                     sx={{
+                        maxWidth: '240px', 
+                        minWidth: '120px', 
                         '& .MuiInputBase-input': {
                             color: 'white',
                         },
@@ -106,6 +108,8 @@ export default function Register(props) {
                     value={password}
                     onChange={event => setPassword(event.target.value)}
                     sx={{
+                        maxWidth: '240px', 
+                        minWidth: '120px', 
                         '& .MuiInputBase-input': {
                             color: 'white',
                         },
@@ -119,7 +123,7 @@ export default function Register(props) {
                         }
                     }}
                 />
-                <Button variant="contained" onClick={() => handleRegistration()}>Register</Button>
+                <Button variant="contained" style={{maxWidth: '180px', maxHeight: '60px', minWidth: '50px', minHeight: '40px'}} onClick={() => handleRegistration()}>Register</Button>
             </Box>
         </div>
     );

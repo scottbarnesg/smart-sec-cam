@@ -2,6 +2,7 @@
     font-family: monospace;
     background-color: #2e2e2e;
     color: white;
-    height: 100vh;
+    min-height: 100vh;
+    min-width: 100vw;
 }
 
