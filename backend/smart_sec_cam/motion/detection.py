@@ -99,11 +99,12 @@ class MotionDetector:
         contours = cv2.findContours(threshold.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         contours = imutils.grab_contours(contours)
         # Iterate over contours and determine if any are large enough to count as motion
+        modified_frame = new_frame.copy()
         for contour in contours:
             if cv2.contourArea(contour) >= self.motion_threshold:
                 x, y, w, h = cv2.boundingRect(contour)
-                cv2.rectangle(new_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        return new_frame
+                cv2.rectangle(modified_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        return modified_frame
 
     def _record_video(self, first_frames: List):
         start_time = time.monotonic()
@@ -115,8 +116,8 @@ class MotionDetector:
         while not self._done_recording_video(start_time):
             if self._has_decoded_frame():
                 new_frame = self._get_decoded_frame()
-                new_frame = self._draw_motion_areas_on_frame(old_frame, new_frame)
-                self.video_writer.add_frame(new_frame)
+                new_frame_with_motion_area = self._draw_motion_areas_on_frame(old_frame, new_frame)
+                self.video_writer.add_frame(new_frame_with_motion_area)
                 old_frame = new_frame
             else:
                 time.sleep(0.01)
