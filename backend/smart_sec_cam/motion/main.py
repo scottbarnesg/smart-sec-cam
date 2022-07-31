@@ -1,3 +1,4 @@
+import os
 import time
 
 from smart_sec_cam.motion.detection import MotionDetector
@@ -39,7 +40,9 @@ def main(redis_url: str, redis_port: int, video_dir: str, motion_threshold: int)
                 if channel not in motion_detectors.keys():
                     print(f"Detected new channel: {channel}")
                     new_channels.append(channel)
-                    motion_detectors[channel] = MotionDetector(channel, video_dir=video_dir)
+                    motion_detectors[channel] = MotionDetector(channel,
+                                                               motion_threshold=motion_threshold,
+                                                               video_dir=video_dir)
             # Check for removed channels
             removed_channels = []
             for channel in motion_detectors.keys():
@@ -62,9 +65,8 @@ if __name__ == '__main__':
     parser.add_argument('--redis-port', help='Server port to stream images to', type=int, default=6379)
     parser.add_argument('--video-dir', help='Directory in which video files are stored', type=str,
                         default="data/videos")
-    parser.add_argument('--motion-threshold', help='Threshold of inter-frame difference to trigger motion detection',
-                        type=int, default=10000)
-
     args = parser.parse_args()
 
-    main(args.redis_url, args.redis_port, args.video_dir, args.motion_threshold)
+    motion_threshold = int(os.environ.get("MOTION_THRESHOLD"))
+
+    main(args.redis_url, args.redis_port, args.video_dir, motion_threshold)

@@ -32,11 +32,12 @@ services:
     build:
       context: backend/
       dockerfile: smart_sec_cam/motion/Dockerfile
-    command: python smart_sec_cam/motion/main.py --redis-url redis --video-dir /backend/data/videos/ --motion-threshold 10000
+    command: python smart_sec_cam/motion/main.py --redis-url redis --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
     environment:
       - PYTHONUNBUFFERED=1
+      - MOTION_THRESHOLD=10000
     depends_on:
       - redis
     restart: always
