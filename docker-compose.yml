@@ -37,7 +37,7 @@ services:
       - ./data/videos/:/backend/data/videos/
     environment:
       - PYTHONUNBUFFERED=1
-      - MOTION_THRESHOLD=20000
+      - MOTION_THRESHOLD=10000
     depends_on:
       - redis
     restart: always
