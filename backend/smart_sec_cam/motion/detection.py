@@ -65,7 +65,7 @@ class MotionDetector:
 
     def _detect_motion(self, old_frame_greyscale, new_frame_greyscale) -> bool:
         """
-        Performs background subtraction on the frames.
+        Detection motion between two frames using contours.
         Returns a boolean indicating if the difference exceeds the motion threshold
         """
         if old_frame_greyscale is None:
