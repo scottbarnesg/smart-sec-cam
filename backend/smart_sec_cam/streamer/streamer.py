@@ -21,7 +21,7 @@ class Streamer:
         else:
             self.camera = UsbCamera(camera_port)
         # Image data queues
-        self.image_queue = queue.Queue()
+        self.image_queue = queue.Queue(maxsize=int(5.0/capture_delay))  # Only queue 5 seconds of video
         # Image sending client
         self.server_address = server_address
         self.server_port = int(server_port)
@@ -65,9 +65,14 @@ if __name__ == '__main__':
     parser.add_argument('--redis-port', help='Server port to stream images to', default=6380)
     parser.add_argument('--pi-cam', help="Use Raspberry Pi camera module", action='store_true')
     parser.add_argument('--rotation', help="Angle to rotate image to", default=0)
+    parser.add_argument('--capture-delay', help="Delay between capturing a new frame", default=0.1)
     args = parser.parse_args()
     # Setup streamer and start threads
-    streamer = Streamer(args.redis_url, args.redis_port, use_pi_camera=args.pi_cam, image_rotation=args.rotation)
+    streamer = Streamer(args.redis_url,
+                        args.redis_port,
+                        use_pi_camera=args.pi_cam,
+                        image_rotation=args.rotation,
+                        capture_delay=args.capture_delay)
     captureThread = Thread(target=streamer.capture_images)
     senderThread = Thread(target=streamer.send_images)
     captureThread.start()
