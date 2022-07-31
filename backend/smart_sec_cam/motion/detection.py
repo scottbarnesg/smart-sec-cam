@@ -108,16 +108,17 @@ class MotionDetector:
     def _record_video(self, first_frames: List):
         start_time = time.monotonic()
         self.video_writer.reset()
-        old_frame = None
+        original_frame = None
         for frame in first_frames:
             self.video_writer.add_frame(frame)
-            old_frame = frame
+            original_frame = frame
         while not self._done_recording_video(start_time):
             if self._has_decoded_frame():
                 new_frame = self._get_decoded_frame()
-                new_frame = self._draw_motion_areas_on_frame(old_frame, new_frame)
+                new_frame = self._draw_motion_areas_on_frame(original_frame, new_frame)
                 self.video_writer.add_frame(new_frame)
-                old_frame = new_frame
+                if original_frame is None:
+                    original_frame = new_frame
             else:
                 time.sleep(0.01)
         self.video_writer.write()
