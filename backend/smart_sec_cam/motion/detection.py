@@ -63,7 +63,7 @@ class MotionDetector:
         else:
             return self._decode_frame(new_frame)
 
-    def _detect_motion(self, old_frame_greyscale, new_frame_greyscale, motion_threshold=20000) -> bool:
+    def _detect_motion(self, old_frame_greyscale, new_frame_greyscale) -> bool:
         """
         Performs background subtraction on the frames.
         Returns a boolean indicating if the difference exceeds the motion threshold
@@ -80,11 +80,11 @@ class MotionDetector:
         contours = imutils.grab_contours(contours)
         # Iterate over contours and determine if any are large enough to count as motion
         for contour in contours:
-            if cv2.contourArea(contour) >= motion_threshold:
+            if cv2.contourArea(contour) >= self.motion_threshold:
                 return True
         return False
 
-    def _draw_motion_areas_on_frame(self, old_frame, new_frame, motion_threshold=20000):
+    def _draw_motion_areas_on_frame(self, old_frame, new_frame):
         if old_frame is None:
             return new_frame
         # Convert frames to greyscale
@@ -100,7 +100,7 @@ class MotionDetector:
         contours = imutils.grab_contours(contours)
         # Iterate over contours and determine if any are large enough to count as motion
         for contour in contours:
-            if cv2.contourArea(contour) >= motion_threshold:
+            if cv2.contourArea(contour) >= self.motion_threshold:
                 print(cv2.contourArea(contour))
                 x, y, w, h = cv2.boundingRect(contour)
                 cv2.rectangle(new_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
