@@ -11,6 +11,7 @@ import { validateToken } from "./utils/ValidateToken";
 import './App.css';
 
 import io from "socket.io-client";
+import { refreshToken } from "./utils/RefreshToken";
 
 const SERVER_URL = "https://localhost:8443"
 const ROOMS_ENDPOINT = "/api/video/rooms"
@@ -22,6 +23,8 @@ export default function App() {
     const [hasValidToken, setHasValidToken] = React.useState(null);
     const [cookies, setCookie] = useCookies(["token"]);
     const navigate = useNavigate();
+    const tokenRefreshIntervalMinutes = 50;
+    const tokenRefreshInterval = tokenRefreshIntervalMinutes * 60 * 1000; // Convert minutes to milliseconds
 
     React.useEffect(() => {
         // Check cookie for valid token. If not, navigate to the login screen
@@ -30,7 +33,12 @@ export default function App() {
         }
         else {
             validateToken(cookies.token, setHasValidToken);
-        }  
+            // Start timer to refresh token in background
+            const interval = setInterval(() => {
+                refreshToken(cookies.token, setCookie);
+            }, tokenRefreshInterval);
+            return () => clearInterval(interval);
+        }
     }, []);
 
     React.useEffect(() => {
