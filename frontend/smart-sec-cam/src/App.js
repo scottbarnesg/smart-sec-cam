@@ -32,7 +32,13 @@ export default function App() {
             navigate('/', { });
         }
         else {
-            validateToken(cookies.token, setHasValidToken);
+            // Validate token
+            try {
+                validateToken(cookies.token, setHasValidToken);
+            }
+            catch {
+                navigate('/', { });
+            }
             // Start timer to refresh token in background
             const interval = setInterval(() => {
                 refreshToken(cookies.token, setCookie);

@@ -27,7 +27,13 @@ export default function VideoList(props) {
             navigate('/', { });
         }
         else {
-            validateToken(cookies.token, setHasValidToken);
+            try {
+                validateToken(cookies.token, setHasValidToken);
+            }
+            catch {
+                navigate('/', { });
+            }
+            
         }  
     }, []);
 
