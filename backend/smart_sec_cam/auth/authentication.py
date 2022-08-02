@@ -8,7 +8,7 @@ from smart_sec_cam.auth.database import AuthDatabase
 
 class Authenticator:
     JWT_SECRET_LENGTH = 24
-    TOKEN_DURATION_HOURS = 1
+    TOKEN_DURATION_HOURS = 3
 
     def __init__(self, auth_db: AuthDatabase):
         self.auth_db = auth_db
@@ -43,7 +43,7 @@ class Authenticator:
 
     def _generate_token(self, user_id: str, client_ip_addr: str) -> str:
         payload = {
-            'exp': (datetime.datetime.utcnow() + datetime.timedelta(hours=self.TOKEN_DURATION_HOURS)).timestamp(),
+            'exp': (datetime.datetime.utcnow() + datetime.timedelta(minutes=self.TOKEN_DURATION_HOURS)).timestamp(),
             'iat': datetime.datetime.utcnow().timestamp(),
             'sub': user_id,
             'client_ip': client_ip_addr

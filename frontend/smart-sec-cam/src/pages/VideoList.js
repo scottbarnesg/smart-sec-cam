@@ -84,6 +84,19 @@ export default function VideoList(props) {
         return () => clearInterval(interval);
     }, [tokenTTL]);
 
+    React.useEffect(() => {
+        if (cookies == null || cookies.token == null) {
+            return;
+        }
+        // Validate Token
+        try {
+            validateToken(cookies.token, setHasValidToken);
+        }
+        catch {
+            navigate('/', { });
+        }
+    }, [cookies])
+
     function setVideoList(videoList) {
         setVideoFileNames(videoList);
         setSelectedVideoFile(videoList[0]);

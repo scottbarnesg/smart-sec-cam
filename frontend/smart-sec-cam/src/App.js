@@ -85,6 +85,19 @@ export default function App() {
     }, [tokenTTL])
 
     React.useEffect(() => {
+        if (cookies == null || cookies.token == null) {
+            return;
+        }
+        // Validate Token
+        try {
+            validateToken(cookies.token, setHasValidToken);
+        }
+        catch {
+            navigate('/', { });
+        }
+    }, [cookies])
+
+    React.useEffect(() => {
         renderComponents();
     }, [rooms])
 
