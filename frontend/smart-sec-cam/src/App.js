@@ -7,6 +7,7 @@ import ImageViewer from "./components/ImageViewer";
 import NavBar from "./components/NavBar";
 
 import { validateToken } from "./utils/ValidateToken";
+import { getTokenTTL } from "./utils/GetTokenTTL";
 
 import './App.css';
 
@@ -21,10 +22,9 @@ export default function App() {
     const [rooms, setRooms] = React.useState([]);
     const [components, setComponents] = React.useState([]);
     const [hasValidToken, setHasValidToken] = React.useState(null);
+    const [tokenTTL, setTokenTTL] = React.useState(null);
     const [cookies, setCookie] = useCookies(["token"]);
     const navigate = useNavigate();
-    const tokenRefreshIntervalMinutes = 50;
-    const tokenRefreshInterval = tokenRefreshIntervalMinutes * 60 * 1000; // Convert minutes to milliseconds
 
     React.useEffect(() => {
         // Check cookie for valid token. If not, navigate to the login screen
@@ -39,16 +39,13 @@ export default function App() {
             catch {
                 navigate('/', { });
             }
-            // Start timer to refresh token in background
-            const interval = setInterval(() => {
-                refreshToken(cookies.token, setCookie);
-            }, tokenRefreshInterval);
-            return () => clearInterval(interval);
         }
     }, []);
 
     React.useEffect(() => {
         if (hasValidToken) {
+            // Get Token's TTL
+            getTokenTTL(cookies.token, setTokenTTL);
             const requestOptions = {
                 method: 'GET',
                 headers: { 'x-access-token': cookies.token },
@@ -65,7 +62,27 @@ export default function App() {
         else if (hasValidToken === false) {
             navigate('/', { });
         }
-    }, [hasValidToken])
+    }, [hasValidToken]);
+
+    React.useEffect(() => {
+        if (tokenTTL == null) {
+            return;
+        }
+        // If TTL is negative, token is expired or invalid. Navigate to login
+        if (tokenTTL < 0) {
+            navigate('/', { });
+        }
+        // Subtract a minute from the token interval and convert it to milliseconds
+        let tokenRefreshInterval = 0;
+        if (tokenTTL - 60 >= 0) {
+             tokenRefreshInterval = (tokenTTL - 60) * 1000;
+        }
+        // Start timer to refresh token in background
+        const interval = setInterval(() => {
+            refreshToken(cookies.token, setCookie);
+        }, tokenRefreshInterval);
+        return () => clearInterval(interval);
+    }, [tokenTTL])
 
     React.useEffect(() => {
         renderComponents();

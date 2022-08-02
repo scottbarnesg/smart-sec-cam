@@ -8,6 +8,8 @@ import VideoPlayer from "../components/VideoPlayer";
 import NavBar from "../components/NavBar";
 
 import { validateToken } from "../utils/ValidateToken";
+import { getTokenTTL } from "../utils/GetTokenTTL";
+import { refreshToken } from "../utils/RefreshToken";
 import "./VideoList.css"
 
 
@@ -18,6 +20,7 @@ export default function VideoList(props) {
     const [videoFileNames, setVideoFileNames] = React.useState([]);
     const [selectedVideoFile, setSelectedVideoFile] = React.useState(null);
     const [hasValidToken, setHasValidToken] = React.useState(null);
+    const [tokenTTL, setTokenTTL] = React.useState(null);
     const [cookies, setCookie] = useCookies(["token"]);
     const navigate = useNavigate();
 
@@ -39,6 +42,9 @@ export default function VideoList(props) {
 
     React.useEffect(() => {
         if (hasValidToken) {
+            // Get Token's TTL
+            getTokenTTL(cookies.token, setTokenTTL);
+            // Get video data
             const requestOptions = {
                 method: 'GET',
                 headers: { 'x-access-token': cookies.token },
@@ -57,6 +63,26 @@ export default function VideoList(props) {
             navigate('/', { });
         }
     }, [hasValidToken]);
+
+    React.useEffect(() => {
+        if (tokenTTL == null) {
+            return;
+        }
+        // If TTL is negative, token is expired or invalid. Navigate to login
+        if (tokenTTL < 0) {
+            navigate('/', { });
+        }
+        // Subtract a minute from the token interval and convert it to milliseconds
+        let tokenRefreshInterval = 0;
+        if (tokenTTL - 60 >= 0) {
+            tokenRefreshInterval = (tokenTTL - 60) * 1000;
+        }
+        // Start timer to refresh token in background
+        const interval = setInterval(() => {
+            refreshToken(cookies.token, setCookie);
+        }, tokenRefreshInterval);
+        return () => clearInterval(interval);
+    }, [tokenTTL]);
 
     function setVideoList(videoList) {
         setVideoFileNames(videoList);
