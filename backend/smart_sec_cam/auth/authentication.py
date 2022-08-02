@@ -8,7 +8,7 @@ from smart_sec_cam.auth.database import AuthDatabase
 
 class Authenticator:
     JWT_SECRET_LENGTH = 24
-    TOKEN_DURATION_HOURS = 3
+    TOKEN_DURATION_HOURS = 2
 
     def __init__(self, auth_db: AuthDatabase):
         self.auth_db = auth_db

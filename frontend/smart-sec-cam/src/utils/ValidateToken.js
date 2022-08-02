@@ -3,7 +3,6 @@ const VALIDATE_TOKEN_ENDPOINT = "/api/token/validate"
 
 
 export function validateToken(token, callback) {
-    console.log("Token: " + String(token));
     const url = SERVER_URL + VALIDATE_TOKEN_ENDPOINT;
     const payload = {
         "token": token

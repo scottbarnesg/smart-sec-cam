@@ -78,10 +78,11 @@ export default function VideoList(props) {
             tokenRefreshInterval = (tokenTTL - 60) * 1000;
         }
         // Start timer to refresh token in background
-        const interval = setInterval(() => {
+        setTimeout(function(){
             refreshToken(cookies.token, setCookie);
+            // Set hasValidToken to null so that it gets picked up by the hook
+            setHasValidToken(null);
         }, tokenRefreshInterval);
-        return () => clearInterval(interval);
     }, [tokenTTL]);
 
     React.useEffect(() => {
