@@ -78,11 +78,12 @@ export default function App() {
              tokenRefreshInterval = (tokenTTL - 60) * 1000;
         }
         // Start timer to refresh token in background
-        setTimeout(function(){
+        const timer = setTimeout(function(){
             refreshToken(cookies.token, setCookie);
             // Set hasValidToken to null so that it gets picked up by the hook
             setHasValidToken(null);
         }, tokenRefreshInterval);
+        return () => clearTimeout(timer);
     }, [tokenTTL])
 
     React.useEffect(() => {

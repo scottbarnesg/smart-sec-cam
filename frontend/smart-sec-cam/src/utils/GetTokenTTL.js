@@ -12,7 +12,6 @@ export function getTokenTTL(token, callback) {
 
 function handleTokenTTLResponse(data){
     if (data.status === "OK") {
-        console.log("TTL: " + String(data.ttl));
         return data.ttl;
     }
     else {
