@@ -34,6 +34,13 @@ class Authenticator:
             payload = jwt.decode(token, self.secret, algorithms=['HS256'])
             return self._generate_token(payload['sub'], client_ip_addr)
 
+    def get_token_ttl(self, token: str) -> float:
+        """
+        Returns token's time to live (TTL) in seconds
+        """
+        payload = jwt.decode(token, self.secret, algorithms=['HS256'])
+        return payload['exp'] - datetime.datetime.utcnow().timestamp()
+
     def _generate_token(self, user_id: str, client_ip_addr: str) -> str:
         payload = {
             'exp': (datetime.datetime.utcnow() + datetime.timedelta(hours=self.TOKEN_DURATION_HOURS)).timestamp(),

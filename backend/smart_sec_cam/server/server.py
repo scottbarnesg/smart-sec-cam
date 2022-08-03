@@ -126,7 +126,7 @@ def register():
     try:
         auth_db.add_user(new_user)
     except ValueError:
-        return json.dumps({'status': "ERROR", "error": "Username already taken"}), 404, {'ContentType': 'application/json'}
+        return json.dumps({'status': "ERROR", "error": "Username taken"}), 404, {'ContentType': 'application/json'}
     return json.dumps({'status': "OK"}), 200, {'ContentType': 'application/json'}
 
 
@@ -137,9 +137,24 @@ def validate_token():
     try:
         if not authenticator.validate_token(token, client_ip_addr):
             return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
-    except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError):
+    except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError, jwt.exceptions.ExpiredSignatureError):
         return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
     return json.dumps({'status': "OK"}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/api/token/ttl", methods=["GET"])
+def get_token_ttl():
+    token = request.args.get("token")
+    client_ip_addr = request.remote_addr
+    # Validate token
+    try:
+        if not authenticator.validate_token(token, client_ip_addr):
+            return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
+    except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError, jwt.exceptions.ExpiredSignatureError):
+        return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
+    # Return TTL
+    ttl = authenticator.get_token_ttl(token)
+    return json.dumps({'status': "OK", "ttl": ttl}), 200, {'ContentType': 'application/json'}
 
 
 @app.route("/api/token/refresh", methods=["POST"])
@@ -149,7 +164,7 @@ def refresh_token():
     try:
         if not authenticator.validate_token(token, client_ip_addr):
             return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
-    except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError):
+    except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError, jwt.exceptions.ExpiredSignatureError):
         return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
     new_token = authenticator.refresh_token(token, client_ip_addr)
     return json.dumps({'status': "OK", "token": new_token}), 200, {'ContentType': 'application/json'}
@@ -181,7 +196,7 @@ def get_video(file_name: str):
     try:
         if not authenticator.validate_token(token, client_ip_addr):
             return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
-    except jwt.exceptions.DecodeError:
+    except (jwt.exceptions.InvalidSignatureError, jwt.exceptions.DecodeError, jwt.exceptions.ExpiredSignatureError):
         return json.dumps({'status': "ERROR", "error": "Invalid token"}), 401, {'ContentType': 'application/json'}
     # Return video
     global VIDEO_DIR
