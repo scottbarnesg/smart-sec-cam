@@ -39,6 +39,7 @@ class UsbCamera:
         elif self.image_rotation == 180:
             return cv2.rotate(frame, cv2.cv2.ROTATE_180_CLOCKWISE)
         else:
+            print(f"Invalid rotation value: {self.image_rotation}")
             return frame
 
 

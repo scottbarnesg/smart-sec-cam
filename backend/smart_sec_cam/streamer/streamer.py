@@ -64,7 +64,7 @@ if __name__ == '__main__':
     parser.add_argument('--redis-url', help='Server address to stream images to', default='localhost')
     parser.add_argument('--redis-port', help='Server port to stream images to', default=6380)
     parser.add_argument('--pi-cam', help="Use Raspberry Pi camera module", action='store_true')
-    parser.add_argument('--rotation', help="Angle to rotate image to", default=0)
+    parser.add_argument('--rotation', help="Angle to rotate image to", type=int, default=0)
     parser.add_argument('--capture-delay', help="Delay between capturing a new frame", default=0.1)
     args = parser.parse_args()
     # Setup streamer and start threads
