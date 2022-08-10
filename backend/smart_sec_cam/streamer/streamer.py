@@ -19,7 +19,7 @@ class Streamer:
         if use_pi_camera:
             self.camera = RPiCamera(image_rotation=image_rotation)
         else:
-            self.camera = UsbCamera(camera_port)
+            self.camera = UsbCamera(camera_port, image_rotation=image_rotation)
         # Image data queues
         self.image_queue = queue.Queue(maxsize=int(5.0/capture_delay))  # Only queue 5 seconds of video
         # Image sending client
