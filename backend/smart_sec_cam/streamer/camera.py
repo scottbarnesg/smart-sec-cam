@@ -33,11 +33,11 @@ class UsbCamera:
 
     def _rotate_image(self, frame):
         if self.image_rotation == 90:
-            return cv2.rotate(frame, cv2.cv2.ROTATE_90_CLOCKWISE)
+            return cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
         elif self.image_rotation == -90 or self.image_rotation == 270:
-            return cv2.rotate(frame, cv2.cv2.ROTATE_270_CLOCKWISE)
+            return cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
         elif self.image_rotation == 180:
-            return cv2.rotate(frame, cv2.cv2.ROTATE_180_CLOCKWISE)
+            return cv2.rotate(frame, cv2.ROTATE_180)
         else:
             print(f"Invalid rotation value: {self.image_rotation}")
             return frame
