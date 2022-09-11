@@ -8,8 +8,8 @@ sed -i "/^User=/ s/$/$USER\n/" smart-sec-cam.service
 # Use current path to set execution path for service file
 echo "Setting execution path for streamer service..."
 path=$(cd ../ && pwd)
-echo "ExecStart=$path/smart_sec_cam/streamer/run.sh" >> smart-sec-cam.service
-echo "WorkingDirectory=$path/smart_sec_cam/streamer/" >> smart-sec-cam.service
+echo "ExecStart=$path/backend/smart_sec_cam/streamer/run.sh" >> smart-sec-cam.service
+echo "WorkingDirectory=$path/backend/smart_sec_cam/streamer/" >> smart-sec-cam.service
 # Copy service file to systemd directory
 echo "Copying service file to systemd service directory..."
 sudo cp smart-sec-cam.service /etc/systemd/system/
