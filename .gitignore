@@ -6,3 +6,4 @@ venv
 
 *data/
 certs/
+scripts/smart-sec-cam.service
