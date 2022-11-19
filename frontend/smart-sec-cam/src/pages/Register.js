@@ -107,6 +107,7 @@ export default function Register(props) {
                     label="Password"
                     value={password}
                     onChange={event => setPassword(event.target.value)}
+                    onKeyPress={event => {if (event.key === 'Enter') {handleRegistration()}}}
                     sx={{
                         maxWidth: '240px', 
                         minWidth: '120px', 
