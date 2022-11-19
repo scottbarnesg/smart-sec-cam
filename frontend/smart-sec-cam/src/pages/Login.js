@@ -193,6 +193,7 @@ export default function Login(props) {
                     label="Password"
                     value={password}
                     onChange={event => setPassword(event.target.value)}
+                    onKeyPress={event => {if (event.key === 'Enter') {handleLogin()}}}
                     sx={{
                         maxWidth: '240px', 
                         minWidth: '120px', 
