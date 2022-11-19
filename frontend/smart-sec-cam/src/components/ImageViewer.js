@@ -10,20 +10,15 @@ let socket = io(SERVER_URL)
 
 export default function ImageViewer(props) {
     const [srcBlob, setSrcBlob] = React.useState(null);
-    const [oldUrl, setOldUrl] = React.useState(null);
     const [cookies, setCookie] = useCookies(["token"]);
 
 
     React.useEffect(() => {
         socket.on('image', (payload) => {
             if (payload.room === props.room){
-                var image = new Blob( [ new Uint8Array( payload.data ) ], { type: "image/jpeg" } )
-                setOldUrl(srcBlob);
-                setSrcBlob(URL.createObjectURL( image ));
-                if (oldUrl != null){
-                    URL.revokeObjectURL(oldUrl)
-                }
-                image = null;
+                const data = new Uint8Array(payload.data);
+                const dataBase64 = btoa(String.fromCharCode.apply(null, data));
+                setSrcBlob(dataBase64);
             }
         });
         socket.emit('join', {"room": props.room, "token": cookies.token});
@@ -31,7 +26,7 @@ export default function ImageViewer(props) {
 
     return (
         <div className="imageviewer">
-            <img src={srcBlob} alt={props.room} ></img>
+            <img src={`data:image/jpeg;base64,${srcBlob}`} alt={props.room} ></img>
         </div>
     );
 
