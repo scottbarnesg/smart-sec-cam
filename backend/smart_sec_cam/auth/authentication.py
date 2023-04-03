@@ -44,7 +44,7 @@ class Authenticator:
     def _generate_token(self, user_id: str, client_ip_addr: str) -> str:
         payload = {
             'exp': (datetime.datetime.utcnow() + datetime.timedelta(hours=self.TOKEN_DURATION_HOURS)).timestamp(),
-            'iat': datetime.datetime.utcnow().timestamp(),
+            'iat': (datetime.datetime.utcnow() - datetime.timedelta(seconds=1)).timestamp(),  # Decrement by one to prevent "token not yet valid" error.
             'sub': user_id,
             'client_ip': client_ip_addr
         }
