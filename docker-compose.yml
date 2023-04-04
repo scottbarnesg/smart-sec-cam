@@ -2,7 +2,7 @@ version: '3'
 
 services:
   redis:
-    image: "container-registry:5050/scottgbarnes/smart-sec-cam/redis:master"
+    image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-redis:latest"
     build:
       context: backend/smart_sec_cam/redis
     ports:
@@ -10,7 +10,7 @@ services:
       - "6380:6380"
     restart: always
   server:
-    image: "container-registry:5050/scottgbarnes/smart-sec-cam/backend:master"
+    image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-server:latest"
     build:
       context: .
       dockerfile: backend/smart_sec_cam/server/Dockerfile
@@ -28,7 +28,7 @@ services:
       - redis
     restart: always
   motion-detection:
-    image: "container-registry:5050/scottgbarnes/smart-sec-cam/motion:master"
+    image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-motion:latest"
     build:
       context: backend/
       dockerfile: smart_sec_cam/motion/Dockerfile
