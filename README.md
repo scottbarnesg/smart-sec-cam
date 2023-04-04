@@ -58,7 +58,11 @@ Example 2: 2 cameras  with hostnames `camera1.local` and `camera2.local`, with t
 1. Install Docker following [the instructions on their website](https://docs.docker.com/engine/install/ubuntu/).
 2. Clone this repository
 3. Generate SSL certificates: `./create-certs.sh`. Alternatively, you may place your own certs in the `certs` dir
-4. Build and run the docker containers: `API_URL=<server-hostname:server-port> docker-compose up -d --build`. 
+4. Pull and run the docker containers: 
+    ```bash
+    docker-compose pull
+    API_URL=<server-hostname:server-port> docker-compose up -d
+    ```
 For example, if the server was running on the host `sec-cam-server` and port `8443` (the default), you should use 
 `API_URL=sec-cam-server:8443`.
 5. You should now be able to view the UI at `https://<server-hostname>:8443`.
@@ -93,3 +97,7 @@ module, run `cd backend && python3 -m pip install .[streamer,picam]`.
    1. Run the script to create the camera systemd service: `cd scripts && ./create-streamer-service.sh`
    2. Run the camera manually: `./run.sh`.
 6. In the Web UI, you should see live video from that camera.
+
+## Contributors
+
+- @khlam for his help with Github Actions and building docker images

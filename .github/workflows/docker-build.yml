@@ -1,0 +1,66 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build-server:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: GHCR Login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Build and push the Smart Sec Cam Server docker image
+        run: | 
+          docker build . --file backend/smart_sec_cam/server/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-server:latest
+          docker push ghcr.io/${{ github.repository }}/sec-cam-server:latest
+
+  build-motion-detection:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: GHCR Login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Build and push the Smart Sec Cam motion detection docker image
+        run: | 
+          docker build backend/ --file backend/smart_sec_cam/motion/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-motion:latest
+          docker push ghcr.io/${{ github.repository }}/sec-cam-motion:latest
+
+  build-redis:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: GHCR Login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Build and push the Smart Sec Cam redis image
+        run: |
+          docker build backend/smart_sec_cam/redis/ --file backend/smart_sec_cam/redis/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-redis:latest
+          docker push ghcr.io/${{ github.repository }}/sec-cam-redis:latest
