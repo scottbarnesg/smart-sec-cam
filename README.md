@@ -97,3 +97,7 @@ module, run `cd backend && python3 -m pip install .[streamer,picam]`.
    1. Run the script to create the camera systemd service: `cd scripts && ./create-streamer-service.sh`
    2. Run the camera manually: `./run.sh`.
 6. In the Web UI, you should see live video from that camera.
+
+## Contributors
+
+- @khlam for his help with Github Actions and building docker images
