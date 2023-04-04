@@ -8,6 +8,8 @@ on:
 
 jobs:
   build-server:
+    runs-on: ubuntu-latest
+
     steps:
 
       - name: GHCR Login
@@ -26,6 +28,8 @@ jobs:
           docker push ghcr.io/${{ github.repository }}/sec-cam-server:latest
 
   build-motion-detection:
+    runs-on: ubuntu-latest
+
     steps:
 
       - name: GHCR Login
@@ -44,6 +48,8 @@ jobs:
           docker push ghcr.io/${{ github.repository }}/sec-cam-motion:latest
 
   build-redis:
+    runs-on: ubuntu-latest
+
     steps:
 
       - name: GHCR Login
