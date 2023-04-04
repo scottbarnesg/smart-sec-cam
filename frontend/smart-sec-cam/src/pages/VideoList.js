@@ -51,9 +51,9 @@ export default function VideoList(props) {
             };
             // Get room list
             let videoFormat = "webm";
-            if (isIOS) {
+            /* if (isIOS) {
                 videoFormat = "mp4"
-            }
+            } */
             const requestUrl = SERVER_URL + VIDEOS_ENDPOINT + "?video-format=" + videoFormat;
             fetch(requestUrl, requestOptions)
                 .then((resp) => resp.json())
