@@ -44,7 +44,7 @@ jobs:
 
       - name: Build and push the Smart Sec Cam motion detection docker image
         run: | 
-          docker build backend/ --file smart_sec_cam/motion/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-motion:latest
+          docker build backend/ --file backend/smart_sec_cam/motion/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-motion:latest
           docker push ghcr.io/${{ github.repository }}/sec-cam-motion:latest
 
   build-redis:
@@ -64,5 +64,5 @@ jobs:
 
       - name: Build and push the Smart Sec Cam redis image
         run: |
-          docker build backend/smart_sec_cam/redis/ --file Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-redis:latest
+          docker build backend/smart_sec_cam/redis/ --file backend/smart_sec_cam/redis/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-redis:latest
           docker push ghcr.io/${{ github.repository }}/sec-cam-redis:latest
