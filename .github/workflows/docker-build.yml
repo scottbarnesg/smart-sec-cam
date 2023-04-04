@@ -1,0 +1,62 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-server:
+    steps:
+
+      - name: GHCR Login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Build and push the ODW API Docker image
+        run: | 
+          docker build . --file backend/smart_sec_cam/server/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-server:latest
+          docker push ghcr.io/${{ github.repository }}/sec-cam-server:latest
+
+  build-motion-detection:
+    steps:
+
+      - name: GHCR Login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Build and push the ODW Celery Docker image
+        run: | 
+          docker build backend/ --file smart_sec_cam/motion/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-motion:latest
+          docker push ghcr.io/${{ github.repository }}/sec-cam-motion:latest
+
+  build-redis:
+    steps:
+
+      - name: GHCR Login
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Build and push the ODW Celery Docker image
+        run: |
+          docker build backend/smart_sec_cam/redis --file Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-redis:latest
+          docker push ghcr.io/${{ github.repository }}/sec-cam-redis:latest
