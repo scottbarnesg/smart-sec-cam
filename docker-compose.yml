@@ -9,7 +9,7 @@ services:
     ports:
       - "6379:6379"
       - "6380:6380"
-    restart: always
+    restart: unless-stopped
   server:
     container_name: sec-cam-server
     image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-server:latest"
@@ -28,14 +28,14 @@ services:
       - "8443:8443"
     depends_on:
       - redis
-    restart: always
-  face-detection:
-    container_name: sec-cam-face-detection
+    restart: unless-stopped
+  person-detection:
+    container_name: sec-cam-person-detection
     image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-detection:latest"
     build:
       context: backend/
       dockerfile: smart_sec_cam/detectors/Dockerfile
-    command: python smart_sec_cam/detectors/detect_faces.py --redis-url redis --video-dir /backend/data/videos/
+    command: python smart_sec_cam/detectors/detect_people.py --redis-url redis --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
     environment:
@@ -43,7 +43,7 @@ services:
       - MOTION_THRESHOLD=20000
     depends_on:
       - redis
-    restart: always
+    restart: unless-stopped
   motion-detection:
     container_name: sec-cam-motion-detection
     image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-detection:latest"
@@ -58,8 +58,4 @@ services:
       - MOTION_THRESHOLD=20000
     depends_on:
       - redis
-    restart: always
-    deploy:
-      resources:
-        limits:
-          memory: 2G
+    restart: unless-stopped
