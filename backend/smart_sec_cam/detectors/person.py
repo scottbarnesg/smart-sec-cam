@@ -10,7 +10,7 @@ from smart_sec_cam.video.writer import VideoWriter
 
 class PersonDetector:
     scale_factor = 1.1
-    min_neighbors = 3
+    min_neighbors = 5
 
     def __init__(self, channel_name: str, video_duration_seconds: int = 10, video_dir: str = "data/videos"):
         self.channel_name = channel_name
