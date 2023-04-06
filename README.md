@@ -4,7 +4,7 @@ A privacy-focused, intelligent security camera system.
 
 ## Features:
 - Multi-camera support w/ minimal configuration. Supports USB cameras and the Raspberry Pi camera module.
-- Face detection and person detection.
+- Face detection and person (full body) detection.
 - Motion detection that automatically saves videos and lets you view them in the web app.
 - Encrypted in transit, both from the cameras to the server and the server to your browser.
 - Integrated authentication 
