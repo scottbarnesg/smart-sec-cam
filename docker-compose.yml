@@ -2,14 +2,16 @@ version: '3'
 
 services:
   redis:
+    container_name: sec-cam-redis
     image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-redis:latest"
     build:
       context: backend/smart_sec_cam/redis
     ports:
       - "6379:6379"
       - "6380:6380"
-    restart: always
+    restart: unless-stopped
   server:
+    container_name: sec-cam-server
     image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-server:latest"
     build:
       context: .
@@ -26,22 +28,34 @@ services:
       - "8443:8443"
     depends_on:
       - redis
-    restart: always
-  motion-detection:
-    image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-motion:latest"
+    restart: unless-stopped
+  person-detection:
+    container_name: sec-cam-person-detection
+    image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-detection:latest"
     build:
       context: backend/
-      dockerfile: smart_sec_cam/motion/Dockerfile
-    command: python smart_sec_cam/motion/main.py --redis-url redis --video-dir /backend/data/videos/
+      dockerfile: smart_sec_cam/detectors/Dockerfile
+    command: python smart_sec_cam/detectors/detect_people.py --redis-url redis --video-dir /backend/data/videos/
     volumes:
       - ./data/videos/:/backend/data/videos/
     environment:
       - PYTHONUNBUFFERED=1
-      - MOTION_THRESHOLD=10000
+      - MOTION_THRESHOLD=20000
     depends_on:
       - redis
-    restart: always
-    deploy:
-      resources:
-        limits:
-          memory: 2G
+    restart: unless-stopped
+  motion-detection:
+    container_name: sec-cam-motion-detection
+    image: "ghcr.io/scottbarnesg/smart-sec-cam/sec-cam-detection:latest"
+    build:
+      context: backend/
+      dockerfile: smart_sec_cam/detectors/Dockerfile
+    command: python smart_sec_cam/detectors/detect_motion.py --redis-url redis --video-dir /backend/data/videos/
+    volumes:
+      - ./data/videos/:/backend/data/videos/
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MOTION_THRESHOLD=20000
+    depends_on:
+      - redis
+    restart: unless-stopped
