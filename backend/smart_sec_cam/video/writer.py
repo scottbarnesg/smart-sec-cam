@@ -37,20 +37,18 @@ class VideoWriter:
         fps = self._calculate_fps()
         # Write to .webm
         webm_file = self.full_filepath + ".webm"
-        fourcc = cv2.VideoWriter_fourcc(*'VP90')
-        writer = cv2.VideoWriter(webm_file, fourcc, fps, self.resolution)
+        webm_fourcc = cv2.VideoWriter_fourcc(*'VP90')
+        webm_writer = cv2.VideoWriter(webm_file, webm_fourcc, fps, self.resolution)
         for frame in self.frame_buffer:
-            writer.write(frame)
-        writer.release()
-        del writer
+            webm_writer.write(frame)
+        webm_writer.release()
         # Write to .mp4
         mp4_file = self.full_filepath + ".mp4"
-        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-        writer = cv2.VideoWriter(mp4_file, fourcc, fps, self.resolution)
+        mp4_fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+        mp4_writer = cv2.VideoWriter(mp4_file, mp4_fourcc, fps, self.resolution)
         for frame in self.frame_buffer:
-            writer.write(frame)
-        writer.release()
-        del writer
+            mp4_writer.write(frame)
+        mp4_writer.release()
         self._clear_frame_buffer()
 
     def reset(self):
