@@ -4,6 +4,7 @@ A privacy-focused, intelligent security camera system.
 
 ## Features:
 - Multi-camera support w/ minimal configuration. Supports USB cameras and the Raspberry Pi camera module.
+- Face detection and person detection.
 - Motion detection that automatically saves videos and lets you view them in the web app.
 - Encrypted in transit, both from the cameras to the server and the server to your browser.
 - Integrated authentication 
@@ -100,4 +101,6 @@ module, run `cd backend && python3 -m pip install .[streamer,picam]`.
 
 ## Contributors
 
-- @khlam for his help with Github Actions and building docker images
+Thank you to the contributors that help keep this project moving forward!
+
+- [Khlam](https://github.com/khlam) for his help with Github Actions and building docker images
