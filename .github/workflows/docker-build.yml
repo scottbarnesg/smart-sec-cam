@@ -25,7 +25,7 @@ jobs:
           docker build . --file backend/smart_sec_cam/server/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-server:latest
           docker push ghcr.io/${{ github.repository }}/sec-cam-server:latest
 
-  build-motion-detection:
+  build-detector:
     runs-on: ubuntu-latest
 
     steps:
@@ -40,9 +40,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: Build and push the Smart Sec Cam motion detection docker image
+      - name: Build and push the Smart Sec Cam detection docker image
         run: | 
-          docker build backend/ --file backend/smart_sec_cam/motion/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-motion:latest
+          docker build backend/ --file backend/smart_sec_cam/motion/Dockerfile --tag ghcr.io/${{ github.repository }}/sec-cam-detection:latest
           docker push ghcr.io/${{ github.repository }}/sec-cam-motion:latest
 
   build-redis:
