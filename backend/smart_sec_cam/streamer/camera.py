@@ -59,7 +59,7 @@ class RPiCamera:
         return processed_image_data
 
     def close(self):
-        self.camera.release()
+        self.camera.close()
 
     def _set_resolution(self, resolution: Tuple[int, int]):
         self.camera.resolution = resolution
