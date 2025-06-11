@@ -42,12 +42,12 @@ class UsbCamera:
 
 
 class RPiCamera:
-    def __init__(self, resolution: Tuple[int, int] = (640, 480), jpeg_quality: int = 70, image_rotation: int = 0):
+    def __init__(self, resolution: Tuple[int, int] = (1280, 720), jpeg_quality: int = 70, image_rotation: int = 0):
         from picamera2 import Picamera2 # Only import picamera at runtime, since it won't install on other systems
 
         self.encode_params = [int(cv2.IMWRITE_JPEG_QUALITY), jpeg_quality]
         self.camera = Picamera2()
-        config = self.camera.create_preview_configuration(main={"size": resolution, "format": "BGR888"})
+        config = self.camera.create_preview_configuration(main={"size": resolution, "format": "RGB888"})
         self.camera.configure(config)
         self.camera.start()
         self.image_rotation = image_rotation
