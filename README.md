@@ -88,7 +88,7 @@ When you're done adding users, you should re-set this value to `0` and restart t
 
 NOTE: These instructions assume you are deploying to a Debian-based OS.
 
-1. Install the `python3-opencv` package and dependencies: `sudo apt-get install python3-opencv libatlas-base-dev`
+1. Install the required packages and dependencies: `sudo apt-get install python3-opencv libatlas-base-dev python3-libcamera python3-kms++ libcap-dev`
 2. Clone this repository
 3. Install the package: `cd backend && python3 -m pip install .[streamer]`. If you are using the Raspberry Pi camera
 module, run `cd backend && python3 -m pip install .[streamer,picam]`.
