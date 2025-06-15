@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smart-sec-cam"
+version = "0.3.9"
+authors = [
+    { name = "Scott Barnes", email = "sgbarnes@protonmail.com" }
+]
+description = "A privacy-focused intelligent security camera system"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "redis >= 4.0.2",
+]
+classifiers = [
+    "Environment :: Web Environment",
+    "Programming Language :: Python :: 3",
+]
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[project.optional-dependencies]
+streamer = [
+    "opencv-python-headless >= 4.5.5",
+    "numpy >= 1.22.0"
+]
+detector = [
+    "opencv-python-headless >= 4.5.5",
+    "numpy >= 1.22.0",
+    "imutils >= 0.5.4"
+]
+server = [
+    "flask ~= 2.3.3",
+    "flask-cors ~= 3.0.10",
+    "flask-socketio ~= 5.1.0",
+    "eventlet ~= 0.40.0",
+    "opencv-python-headless >= 4.5.5",
+    "pyjwt >= 2.4.0"
+]
