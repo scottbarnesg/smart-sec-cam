@@ -4,6 +4,8 @@ import time
 from functools import wraps
 
 import eventlet
+eventlet.monkey_patch()
+
 import jwt.exceptions
 from flask import Flask, send_from_directory, render_template, request
 from flask_cors import CORS
@@ -16,7 +18,6 @@ from smart_sec_cam.redis import RedisImageReceiver
 from smart_sec_cam.video.manager import VideoManager
 
 # SocketIO & CORS
-eventlet.monkey_patch()
 app = Flask(__name__, static_url_path='', static_folder='/backend/build', template_folder='/backend/build')
 CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")

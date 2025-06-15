@@ -37,10 +37,10 @@ detector = [
     "imutils >= 0.5.4"
 ]
 server = [
-    "flask >= 2.0.2",
-    "flask-cors >= 3.0.10",
-    "flask-socketio == 5.1.0",
-    "eventlet >= 0.33.0",
+    "flask ~= 2.3.3",
+    "flask-cors ~= 3.0.10",
+    "flask-socketio ~= 5.1.0",
+    "eventlet ~= 0.40.0",
     "opencv-python-headless >= 4.5.5",
     "pyjwt >= 2.4.0"
 ]
