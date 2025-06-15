@@ -1,4 +1,4 @@
-FROM redis
+FROM redis:7
 
 MAINTAINER Scott Barnes "sgbarnes@protonmail.com"
 
