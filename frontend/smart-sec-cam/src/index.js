@@ -1,19 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Updated import
+import ReactDOM from 'react-dom/client';
 import {
   BrowserRouter,
   Routes,
   Route
 } from "react-router-dom";
-import { CookiesProvider } from 'react-cookie'; // Import CookiesProvider
+import { CookiesProvider } from 'react-cookie'
 import './index.css';
 import App from './App';
 import VideoList from "./pages/VideoList";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById('root')); // Create root
+const root = ReactDOM.createRoot(document.getElementById('root')); 
 root.render(
   <React.StrictMode>
     <CookiesProvider>
