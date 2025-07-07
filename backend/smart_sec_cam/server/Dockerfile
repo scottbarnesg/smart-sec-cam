@@ -1,4 +1,4 @@
-FROM node:16-alpine as build-static
+FROM node:20-alpine as build-static
 
 WORKDIR /frontend
 RUN mkdir -p certs
