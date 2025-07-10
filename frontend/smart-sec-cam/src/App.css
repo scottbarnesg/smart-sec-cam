@@ -1,42 +1,42 @@
 .App {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 .App header {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .main-container {
-    display: flex;
-    flex: 1;
-    height: calc(100vh - 64px); /* Adjust based on NavBar height */
+  display: flex;
+  flex: 1;
 }
 
 .sidebar {
-    width: 200px;
-    background-color: #f0f0f0;
-    border-right: 1px solid #ccc;
-    overflow-y: auto;
-    padding: 10px;
+  width: 200px;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+  padding: 10px;
 }
 
 .main-view {
-    flex: 1;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .thumbnail-wrapper {
-    cursor: pointer;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 5px;
-    background-color: #fff;
+  cursor: pointer;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  background-color: #fff;
 }
