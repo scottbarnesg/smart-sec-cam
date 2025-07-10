@@ -9,7 +9,6 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-
 const darkTheme = createTheme({
     palette: {
         mode: 'dark',
@@ -30,7 +29,7 @@ export default function ButtonAppBar(props) {
     }    
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box>
             <ThemeProvider theme={darkTheme}>
                 <AppBar position="static">
                     <Toolbar variant="dense" color="primary">
@@ -54,4 +53,4 @@ export default function ButtonAppBar(props) {
             </ThemeProvider>
         </Box>
     );
-    }
+}
