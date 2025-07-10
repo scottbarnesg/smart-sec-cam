@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-
 import { useCookies } from 'react-cookie';
 
 import ImageViewer from "./components/ImageViewer";
@@ -19,106 +18,91 @@ const ROOMS_ENDPOINT = "/api/video/rooms"
 let socket = io(SERVER_URL)
 
 export default function App() {
-    const [rooms, setRooms] = React.useState([]);
-    const [components, setComponents] = React.useState([]);
-    const [hasValidToken, setHasValidToken] = React.useState(null);
-    const [tokenTTL, setTokenTTL] = React.useState(null);
+    const [rooms, setRooms] = useState([]);
+    const [hasValidToken, setHasValidToken] = useState(null);
+    const [tokenTTL, setTokenTTL] = useState(null);
     const [cookies, setCookie] = useCookies(["token"]);
+    const [selectedRoom, setSelectedRoom] = useState(null);
     const navigate = useNavigate();
 
-    React.useEffect(() => {
-        // Check cookie for valid token. If not, navigate to the login screen
+    useEffect(() => {
         if (cookies.token == null) {
-            navigate('/', { });
-        }
-        else {
-            // Validate token
+            navigate('/', {});
+        } else {
             try {
                 validateToken(cookies.token, setHasValidToken);
-            }
-            catch {
-                navigate('/', { });
+            } catch {
+                navigate('/', {});
             }
         }
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (hasValidToken) {
-            // Get Token's TTL
             getTokenTTL(cookies.token, setTokenTTL);
             const requestOptions = {
                 method: 'GET',
                 headers: { 'x-access-token': cookies.token },
             };
-            // Get room list
             fetch(SERVER_URL + ROOMS_ENDPOINT, requestOptions)
                 .then((resp) => resp.json())
-                .then((data) => {updateRooms(data['rooms'])})
-            // Configure socket
-            socket.on('rooms', (payload) => {
-                updateRooms(payload.rooms);
-            });
-        }
-        else if (hasValidToken === false) {
-            navigate('/', { });
+                .then((data) => updateRooms(data['rooms']));
+            socket.on('rooms', (payload) => updateRooms(payload.rooms));
+        } else if (hasValidToken === false) {
+            navigate('/', {});
         }
     }, [hasValidToken]);
 
-    React.useEffect(() => {
-        if (tokenTTL == null) {
-            return;
-        }
-        // If TTL is negative, token is expired or invalid. Navigate to login
+    useEffect(() => {
+        if (tokenTTL == null) return;
         if (tokenTTL < 0) {
-            navigate('/', { });
+            navigate('/', {});
         }
-        // Subtract a minute from the token interval and convert it to milliseconds
-        let tokenRefreshInterval = 0;
-        if (tokenTTL - 60 >= 0) {
-             tokenRefreshInterval = (tokenTTL - 60) * 1000;
-        }
-        // Start timer to refresh token in background
-        const timer = setTimeout(function(){
+        let tokenRefreshInterval = (tokenTTL - 60) * 1000;
+        if (tokenRefreshInterval < 0) tokenRefreshInterval = 0;
+        const timer = setTimeout(() => {
             refreshToken(cookies.token, setCookie);
-            // Set hasValidToken to null so that it gets picked up by the hook
             setHasValidToken(null);
         }, tokenRefreshInterval);
         return () => clearTimeout(timer);
-    }, [tokenTTL])
+    }, [tokenTTL]);
 
-    React.useEffect(() => {
-        if (cookies == null || cookies.token == null) {
-            return;
-        }
-        // Validate Token
+    useEffect(() => {
+        if (cookies == null || cookies.token == null) return;
         try {
             validateToken(cookies.token, setHasValidToken);
+        } catch {
+            navigate('/', {});
         }
-        catch {
-            navigate('/', { });
-        }
-    }, [cookies])
+    }, [cookies]);
 
-    React.useEffect(() => {
-        renderComponents();
-    }, [rooms])
+    useEffect(() => {
+        if (rooms.length > 0 && selectedRoom === null) {
+            setSelectedRoom(rooms[0]);
+        }
+    }, [rooms]);
 
     function updateRooms(rooms) {
         setRooms(rooms != null ? Object.keys(rooms) : []);
     }
 
-    function renderComponents() {
-        let components = []
-        for (const room_name of rooms) {
-            components.push(<ImageViewer key={room_name} room={room_name}/>)
-        }
-        setComponents(components);
-    }
-
     return (
         <div className="App">
-            <NavBar token={cookies.token}/>
-            {components}
+            <NavBar token={cookies.token} />
+            <div className="sidebar">
+                {rooms.map((room) => (
+                    <div
+                        key={room}
+                        onClick={() => setSelectedRoom(room)}
+                        className="thumbnail-wrapper"
+                    >
+                        <ImageViewer room={room} className="thumbnail" />
+                    </div>
+                ))}
+            </div>
+            <div className="main">
+                {selectedRoom && <ImageViewer room={selectedRoom} className="main-view" />}
+            </div>
         </div>
     );
-};
+}
