@@ -72,7 +72,7 @@ if __name__ == '__main__':
                         args.redis_port,
                         use_pi_camera=args.pi_cam,
                         image_rotation=args.rotation,
-                        capture_delay=args.capture_delay)
+                        capture_delay=float(args.capture_delay))
     captureThread = Thread(target=streamer.capture_images)
     senderThread = Thread(target=streamer.send_images)
     captureThread.start()
