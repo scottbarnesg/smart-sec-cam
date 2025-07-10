@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useCookies } from 'react-cookie';
-import io from "socket.io-client";
 import "./ImageViewer.css";
-
-const SERVER_URL = "https://localhost:8443"
-let socket = io(SERVER_URL)
+import socket from "./socket"; // ✅ Import shared socket
 
 export default function ImageViewer(props) {
     const [srcBlob, setSrcBlob] = useState(null);
-    const [cookies, setCookie] = useCookies(["token"]);
+    const [cookies] = useCookies(["token"]);
 
     useEffect(() => {
-        // Unsubscribe from previous room if necessary
+        // Remove all existing image listeners
         socket.off('image');
 
         // Subscribe to the current room's image stream
@@ -30,7 +27,7 @@ export default function ImageViewer(props) {
         return () => {
             socket.off('image');
         };
-    }, [props.room, cookies.token]); // Dependency on room and token
+    }, [props.room, cookies.token]);
 
     return (
         <div className={`imageviewer ${props.className || ''}`}>

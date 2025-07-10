@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import ImageViewer from "./components/ImageViewer";
 import NavBar from "./components/NavBar";
-
 import { validateToken } from "./utils/ValidateToken";
 import { getTokenTTL } from "./utils/GetTokenTTL";
-
 import './App.css';
-
-import io from "socket.io-client";
 import { refreshToken } from "./utils/RefreshToken";
+import socket from "./socket"; // ✅ Import shared socket
 
-const SERVER_URL = "https://localhost:8443"
-const ROOMS_ENDPOINT = "/api/video/rooms"
-let socket = io(SERVER_URL)
+const SERVER_URL = "https://localhost:8443";
+const ROOMS_ENDPOINT = "/api/video/rooms";
 
 export default function App() {
     const [rooms, setRooms] = useState([]);
