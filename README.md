@@ -90,14 +90,14 @@ NOTE: These instructions assume you are deploying to a Debian-based OS.
 
 1. Install the required packages and dependencies: `sudo apt install python3-opencv libatlas-base-dev`
    a. If you are installing on a Raspberry Pi using a Pi Camera module, also run `sudo apt install python3-picamera2`.
-2. Clone this repository
-3. Install the package: `cd backend && python3 -m pip install .[streamer]`. If you are using the Raspberry Pi camera
-module, run `cd backend && python3 -m pip install .[streamer,picam]`.
-4. Update `--server_url` in `run.sh` to point at the host you deployed the server to.
-5. You can install the camera software as a systemd service or run it manually. Either:
+2. Clone this repository.
+3. Create a virtual environment, inheriting site packages: `python -m venv .venv --system-site-packages`. You can activate this virtual environment with `source .venv/bin/activate`.
+4. Install the package: `cd backend && python3 -m pip install .[streamer]`.
+5. Update `--server_url` in `run.sh` to point at the host you deployed the server to.
+6. You can install the camera software as a systemd service or run it manually. Either:
    1. Run the script to create the camera systemd service: `cd scripts && ./create-streamer-service.sh`
    2. Run the camera manually: `./run.sh`.
-6. In the Web UI, you should see live video from that camera.
+7. In the Web UI, you should see live video from that camera.
 
 ## Contributors
 
