@@ -7,12 +7,14 @@
 }
 
 .App header {
+  height: 48px;
   flex-shrink: 0;
 }
 
 .main-container {
   display: flex;
   flex: 1;
+  overflow: hidden;
 }
 
 .sidebar {
