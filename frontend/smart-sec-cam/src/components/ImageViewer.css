@@ -2,13 +2,12 @@
     width: 150px;
     height: 100px;
     display: block;
-    margin: 0 auto;
+    object-fit: cover;
 }
 
-.imageviewer.main-view {
+.imageviewer.large-view {
     width: 100%;
-    height: 90vh;
-    max-height: 100%;
+    height: 100%;
     object-fit: contain;
 }
 

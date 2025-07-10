@@ -2,16 +2,17 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
+    margin: 0;
 }
 
 .App header {
     flex-shrink: 0;
 }
 
-.App main {
+.main-container {
     display: flex;
     flex: 1;
-    overflow: hidden;
+    height: calc(100vh - 64px); /* Adjust based on NavBar height */
 }
 
 .sidebar {
@@ -22,6 +23,15 @@
     padding: 10px;
 }
 
+.main-view {
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
 .thumbnail-wrapper {
     cursor: pointer;
     margin-bottom: 10px;
@@ -29,9 +39,4 @@
     border-radius: 4px;
     padding: 5px;
     background-color: #fff;
-}
-
-.main {
-    flex: 1;
-    padding: 10px;
 }

@@ -89,19 +89,21 @@ export default function App() {
     return (
         <div className="App">
             <NavBar token={cookies.token} />
-            <div className="sidebar">
-                {rooms.map((room) => (
-                    <div
-                        key={room}
-                        onClick={() => setSelectedRoom(room)}
-                        className="thumbnail-wrapper"
-                    >
-                        <ImageViewer room={room} className="thumbnail" />
-                    </div>
-                ))}
-            </div>
-            <div className="main">
-                {selectedRoom && <ImageViewer room={selectedRoom} className="main-view" />}
+            <div className="main-container">
+                <div className="sidebar">
+                    {rooms.map((room) => (
+                        <div
+                            key={room}
+                            onClick={() => setSelectedRoom(room)}
+                            className="thumbnail-wrapper"
+                        >
+                            <ImageViewer room={room} className="thumbnail" />
+                        </div>
+                    ))}
+                </div>
+                <div className="main-view">
+                    {selectedRoom && <ImageViewer room={selectedRoom} className="large-view" />}
+                </div>
             </div>
         </div>
     );
