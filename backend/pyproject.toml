@@ -29,7 +29,7 @@ where = ["."]
 [project.optional-dependencies]
 streamer = [
     "opencv-python-headless >= 4.5.5",
-    "numpy >= 1.22.0"
+    "numpy == 1.24.2"
 ]
 detector = [
     "opencv-python-headless >= 4.5.5",
