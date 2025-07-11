@@ -1,8 +1,6 @@
-# image_receiver.py
-
-import redis
 from typing import List, Dict
 
+import redis
 
 class RedisImageReceiver:
     def __init__(self, redis_host: str = "localhost", redis_port: int = 6379):
