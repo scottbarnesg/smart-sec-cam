@@ -1,3 +1,4 @@
+import base64
 import json
 import os
 import time
@@ -228,7 +229,8 @@ def listen_for_images(redis_url: str, redis_port: int):
             image = message.get("data")
             room = str(message.get("channel"))
             rooms[room] = time.time()
-            socketio.emit('image', {'room': room, 'data': image}, room=room)
+            encoded_image = base64.b64encode(image).decode('utf-8')
+            socketio.emit('image', {'room': room, 'data': encoded_image}, room=room)
         time.sleep(0.01)
 
 

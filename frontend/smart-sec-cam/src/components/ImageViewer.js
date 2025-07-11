@@ -16,9 +16,7 @@ export default function ImageViewer(props) {
     React.useEffect(() => {
         socket.on('image', (payload) => {
             if (payload.room === props.room){
-                const data = new Uint8Array(payload.data);
-                const dataBase64 = btoa(String.fromCharCode.apply(null, data));
-                setSrcBlob(dataBase64);
+                setSrcBlob(payload.data);
             }
         });
         socket.emit('join', {"room": props.room, "token": cookies.token});
