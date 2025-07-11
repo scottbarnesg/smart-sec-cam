@@ -213,25 +213,24 @@ def get_video(file_name: str):
 
 def listen_for_images(redis_url: str, redis_port: int):
     global rooms
-    started_listener_thread = False
     image_receiver = RedisImageReceiver(redis_url, redis_port)
+    image_receiver.set_channels(image_receiver.get_all_channels())
+
     while True:
         # Check for new channels
-        # TODO: This should only be done every N seconds
         channel_list = image_receiver.get_all_channels()
         if channel_list != image_receiver.subscribed_channels:
             image_receiver.set_channels(channel_list)
-            if not started_listener_thread:
-                image_receiver.start_listener_thread()
-        # Check for new messages
-        if image_receiver.has_message() and image_receiver.subscribed_channels:
-            message = image_receiver.get_message()
-            image = message.get("data")
-            room = str(message.get("channel"))
+        # Directly check for new messages
+        new_message = image_receiver.get_new_message()
+        if new_message and image_receiver.subscribed_channels:
+            image = new_message.get("data")
+            room = str(new_message.get("channel"))
             rooms[room] = time.time()
             encoded_image = base64.b64encode(image).decode('utf-8')
             socketio.emit('image', {'room': room, 'data': encoded_image}, room=room)
-        time.sleep(0.01)
+        else:
+            eventlet.sleep(0.01)
 
 
 if __name__ == '__main__':
