@@ -28,21 +28,13 @@ export default function ButtonAppBar(props) {
   }
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ display: 'flex' }}> {/* Removed flexGrow: 1 */}
       <ThemeProvider theme={darkTheme}>
-        <AppBar
-          position="static"
-          sx={{
-            height: '48px', // Reduced height
-          }}
-        >
+        <AppBar position="static" sx={{ height: '48px' }}>
           <Toolbar
             variant="dense"
             color="primary"
-            sx={{
-              minHeight: '48px', // Match AppBar height
-              padding: '0 12px',
-            }}
+            sx={{ minHeight: '48px', padding: '0 12px' }}
           >
             <IconButton
               size="large"
@@ -56,11 +48,7 @@ export default function ButtonAppBar(props) {
             <Typography
               variant="h6"
               component="div"
-              align="left"
-              sx={{
-                flexGrow: 1,
-                fontSize: '1rem', // Reduced font size
-              }}
+              sx={{ flexGrow: 1, fontSize: '1rem' }}
             >
               Smart Security Camera
             </Typography>
