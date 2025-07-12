@@ -1,16 +1,11 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
-
 import { useCookies } from 'react-cookie';
-
 import ImageViewer from "./components/ImageViewer";
 import NavBar from "./components/NavBar";
-
 import { validateToken } from "./utils/ValidateToken";
 import { getTokenTTL } from "./utils/GetTokenTTL";
-
 import './App.css';
-
 import io from "socket.io-client";
 import { refreshToken } from "./utils/RefreshToken";
 
@@ -20,19 +15,17 @@ let socket = io(SERVER_URL)
 
 export default function App() {
     const [rooms, setRooms] = React.useState([]);
-    const [components, setComponents] = React.useState([]);
+    const [selectedRoom, setSelectedRoom] = React.useState(null);
     const [hasValidToken, setHasValidToken] = React.useState(null);
     const [tokenTTL, setTokenTTL] = React.useState(null);
     const [cookies, setCookie] = useCookies(["token"]);
     const navigate = useNavigate();
 
     React.useEffect(() => {
-        // Check cookie for valid token. If not, navigate to the login screen
         if (cookies.token == null) {
             navigate('/', { });
         }
         else {
-            // Validate token
             try {
                 validateToken(cookies.token, setHasValidToken);
             }
@@ -44,17 +37,14 @@ export default function App() {
 
     React.useEffect(() => {
         if (hasValidToken) {
-            // Get Token's TTL
             getTokenTTL(cookies.token, setTokenTTL);
             const requestOptions = {
                 method: 'GET',
                 headers: { 'x-access-token': cookies.token },
             };
-            // Get room list
             fetch(SERVER_URL + ROOMS_ENDPOINT, requestOptions)
                 .then((resp) => resp.json())
-                .then((data) => {updateRooms(data['rooms'])})
-            // Configure socket
+                .then((data) => updateRooms(data['rooms']))
             socket.on('rooms', (payload) => {
                 updateRooms(payload.rooms);
             });
@@ -68,19 +58,15 @@ export default function App() {
         if (tokenTTL == null) {
             return;
         }
-        // If TTL is negative, token is expired or invalid. Navigate to login
         if (tokenTTL < 0) {
             navigate('/', { });
         }
-        // Subtract a minute from the token interval and convert it to milliseconds
         let tokenRefreshInterval = 0;
         if (tokenTTL - 60 >= 0) {
              tokenRefreshInterval = (tokenTTL - 60) * 1000;
         }
-        // Start timer to refresh token in background
         const timer = setTimeout(function(){
             refreshToken(cookies.token, setCookie);
-            // Set hasValidToken to null so that it gets picked up by the hook
             setHasValidToken(null);
         }, tokenRefreshInterval);
         return () => clearTimeout(timer);
@@ -90,7 +76,6 @@ export default function App() {
         if (cookies == null || cookies.token == null) {
             return;
         }
-        // Validate Token
         try {
             validateToken(cookies.token, setHasValidToken);
         }
@@ -100,25 +85,42 @@ export default function App() {
     }, [cookies])
 
     React.useEffect(() => {
-        renderComponents();
-    }, [rooms])
+        const requestOptions = {
+            method: 'GET',
+            headers: { 'x-access-token': cookies.token },
+        };
+        fetch(SERVER_URL + ROOMS_ENDPOINT, requestOptions)
+            .then((resp) => resp.json())
+            .then((data) => updateRooms(data['rooms']))
+    }, []);
 
     function updateRooms(rooms) {
-        setRooms(rooms != null ? Object.keys(rooms) : []);
-    }
-
-    function renderComponents() {
-        let components = []
-        for (const room_name of rooms) {
-            components.push(<ImageViewer key={room_name} room={room_name}/>)
+        const roomNames = rooms != null ? Object.keys(rooms) : [];
+        setRooms(roomNames);
+        if (roomNames.length > 0 && selectedRoom === null) {
+            setSelectedRoom(roomNames[0]);
         }
-        setComponents(components);
     }
 
     return (
         <div className="App">
             <NavBar token={cookies.token}/>
-            {components}
+            <div className="app-container">
+                <div className="sidebar">
+                    {rooms.map(room => (
+                        <div 
+                            key={room} 
+                            className="sidebar-item"
+                            onClick={() => setSelectedRoom(room)}
+                        >
+                            <ImageViewer room={room} />
+                        </div>
+                    ))}
+                </div>
+                <div className="main-view">
+                    {selectedRoom && <ImageViewer room={selectedRoom} />}
+                </div>
+            </div>
         </div>
     );
 };

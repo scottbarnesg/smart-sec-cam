@@ -1,12 +1,15 @@
 .imageviewer {
-    display: inline-block;
-    min-width: 360px;
-    width: 50%;
-    max-width: 100%;
+  display: inline-block;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
 }
 
-
 img {
-    min-width: 360px;
-    width: 100%;
+  min-width: 0;
+  width: 100%;
+  display: block;
+  height: auto;
+  object-fit: contain;
+  max-height: 100%;
 }
