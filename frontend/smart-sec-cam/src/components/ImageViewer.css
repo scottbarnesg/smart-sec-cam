@@ -8,8 +8,8 @@
 img {
   min-width: 0;
   width: 100%;
-  display: block;
   height: auto;
-  object-fit: contain;
   max-height: 100%;
+  object-fit: contain;
+  display: block;
 }
