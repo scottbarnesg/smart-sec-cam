@@ -1,12 +1,27 @@
 .imageviewer {
-    display: inline-block;
-    min-width: 360px;
-    width: 50%;
-    max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
+.imageviewer.main img {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+}
 
-img {
-    min-width: 360px;
-    width: 100%;
+.imageviewer.preview {
+  width: 100%;
+  height: 100px; /* Fixed height for thumbnails */
+  overflow: hidden;
+}
+
+.imageviewer.preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

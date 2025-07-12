@@ -8,24 +8,22 @@ import "./ImageViewer.css";
 const SERVER_URL = "https://localhost:8443"
 let socket = io(SERVER_URL)
 
-export default function ImageViewer(props) {
-    const [srcBlob, setSrcBlob] = React.useState(null);
-    const [cookies, setCookie] = useCookies(["token"]);
+export default function ImageViewer({ room, isPreview }) {
+  const [srcBlob, setSrcBlob] = React.useState(null);
+  const [cookies, setCookie] = useCookies(["token"]);
 
+  React.useEffect(() => {
+    socket.on('image', (payload) => {
+      if (payload.room === room) {
+        setSrcBlob(payload.data);
+      }
+    });
+    socket.emit('join', { room, token: cookies.token });
+  }, [room]);
 
-    React.useEffect(() => {
-        socket.on('image', (payload) => {
-            if (payload.room === props.room){
-                setSrcBlob(payload.data);
-            }
-        });
-        socket.emit('join', {"room": props.room, "token": cookies.token});
-    }, []);
-
-    return (
-        <div className="imageviewer">
-            <img src={`data:image/jpeg;base64,${srcBlob}`} alt={props.room} ></img>
-        </div>
-    );
-
-};
+  return (
+    <div className={`imageviewer ${isPreview ? 'preview' : 'main'}`}>
+      {srcBlob && <img src={`data:image/jpeg;base64,${srcBlob}`} alt={room} />}
+    </div>
+  );
+}
