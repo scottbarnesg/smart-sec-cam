@@ -108,13 +108,13 @@ export default function App() {
             <div className="app-container">
             <div className="sidebar">
                 {rooms.map(room => (
-                <div 
+                    <div 
                     key={room} 
                     className="sidebar-item"
                     onClick={() => setSelectedRoom(room)}
-                >
-                    <ImageViewer room={room} />
-                </div>
+                    >
+                    <ImageViewer room={room} isPreview />
+                    </div>
                 ))}
             </div>
             <div className="main-view">
